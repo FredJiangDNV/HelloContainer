@@ -29,3 +29,4 @@ HelloContainer/
 * 《代码整洁之道》
 * 《.NET单元测试的艺术》
 * 《领域驱动设计-软件核心复杂性能应对之道》
+*  eShop(https://github.com/dotnet/eShop)
