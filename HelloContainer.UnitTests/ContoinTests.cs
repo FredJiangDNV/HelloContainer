@@ -17,10 +17,10 @@ namespace HelloContainer.UnitTests
         public void ConnectTo_WhenTwoContainersConnected_ShouldShareWaterEqually()
         {
             // Arrange
-            var a = new Container();
-            var b = new Container();
-            var c = new Container();
-            var d = new Container();
+            var a = Container.Create("a", 100);
+            var b = Container.Create("b", 100);
+            var c = Container.Create("c", 100);
+            var d = Container.Create("d", 100);
 
             // Act
             a.AddWater(12);
