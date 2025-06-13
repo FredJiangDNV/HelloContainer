@@ -43,7 +43,24 @@
                 throw new InvalidOperationException("Container is already connected.");
             }
 
+            // TODO: Code need improve
+            var currentGroupSize = ConnectedContainers.Count() + 1;
+            var otherGroupSize = container.ConnectedContainers.Count() + 1;
+
+            double currentGroupTotalAmount = currentGroupSize * Amount;
+            double otherGroupTotalAmount = otherGroupSize * container.Amount;
+
+            double newAmount = (currentGroupTotalAmount + otherGroupTotalAmount) / (currentGroupSize + otherGroupSize);
+
             ConnectedContainers.Add(container);
+            container.ConnectedContainers.Add(this);
+
+            var allConnectedContainers = ConnectedContainers.Concat(container.ConnectedContainers).Distinct().ToList();
+
+            foreach (var item in allConnectedContainers)
+            {
+                item.Amount = newAmount;
+            }
         }
 
         public void AddWater(double amount)
