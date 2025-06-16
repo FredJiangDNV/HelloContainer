@@ -38,5 +38,93 @@ namespace HelloContainer.UnitTests
             Assert.Equal(0, c.GetAmount());
             Assert.Equal(8, d.GetAmount());
         }
+
+        [Fact]
+        public void Create_ShouldSetPropertiesCorrectly()
+        {
+            // Arrange & Act
+            var container = Container.Create("TestContainer", 100);
+
+            // Assert
+            Assert.NotEqual(Guid.Empty, container.Id);
+            Assert.Equal("TestContainer", container.Name);
+            Assert.Equal(100, container.Capacity);
+            Assert.Empty(container.ConnectedContainers);
+        }
+
+        [Fact]
+        public void AddWater_ShouldIncreaseAmount()
+        {
+            // Arrange
+            var container = Container.Create("TestContainer", 100);
+
+            // Act
+            container.AddWater(10);
+
+            // Assert
+            Assert.Equal(10, container.GetAmount());
+        }
+
+        [Fact]
+        public void SetAmount_ShouldUpdateAmount()
+        {
+            // Arrange
+            var container = Container.Create("TestContainer", 100);
+
+            // Act
+            container.SetAmount(20);
+
+            // Assert
+            Assert.Equal(20, container.GetAmount());
+        }
+
+        [Fact]
+        public void ConnectTo_NullContainer_ShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var container = Container.Create("TestContainer", 100);
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => container.ConnectTo(null));
+        }
+
+        [Fact]
+        public void ConnectTo_Self_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var container = Container.Create("TestContainer", 100);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => container.ConnectTo(container));
+        }
+
+        [Fact]
+        public void ConnectTo_AlreadyConnected_ShouldThrowInvalidOperationException()
+        {
+            // Arrange
+            var containerA = Container.Create("A", 100);
+            var containerB = Container.Create("B", 100);
+            containerA.ConnectTo(containerB);
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => containerA.ConnectTo(containerB));
+        }
+
+        [Fact]
+        public void ConnectTo_ShouldShareWaterEqually()
+        {
+            // Arrange
+            var containerA = Container.Create("A", 100);
+            var containerB = Container.Create("B", 100);
+            containerA.AddWater(10);
+            containerB.AddWater(20);
+
+            // Act
+            containerA.ConnectTo(containerB);
+
+            // Assert
+            Assert.Equal(15, containerA.GetAmount());
+            Assert.Equal(15, containerB.GetAmount());
+        }
     }
 }
