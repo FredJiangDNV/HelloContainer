@@ -71,6 +71,16 @@
             Amount = newAmount;
         }
 
+        public void AddAndDistributeWater(double amount)
+        {
+            var amountPerContainer = amount / (ConnectedContainers.Count + 1);
+            Amount += amountPerContainer;
+            foreach (var container in ConnectedContainers)
+            {
+                container.AddWater(amountPerContainer);
+            }
+        }
+
         public void AddWater(double amount)
         {
             Amount += amount;

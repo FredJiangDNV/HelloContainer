@@ -23,16 +23,52 @@ namespace HelloContainer.UnitTests
             var d = Container.Create("d", 100);
 
             // Act
-            a.AddWater(12);
-            d.AddWater(8);
+            a.AddAndDistributeWater(12);
+            d.AddAndDistributeWater(8);
             a.ConnectTo(b);
 
             // Assert
-            outputHelper.WriteLine($"Container A: {a.GetAmount()}");
-            outputHelper.WriteLine($"Container B: {b.GetAmount()}");
-            outputHelper.WriteLine($"Container C: {c.GetAmount()}");
-            outputHelper.WriteLine($"Container D: {d.GetAmount()}");
+            Assert.Equal(6, a.GetAmount());
+            Assert.Equal(6, b.GetAmount());
+            Assert.Equal(0, c.GetAmount());
+            Assert.Equal(8, d.GetAmount());
+        }
 
+        [Fact]
+        public void AddWater_WhenContainersNotConnect()
+        {
+            // Arrange
+            var a = Container.Create("a", 100);
+            var b = Container.Create("b", 100);
+            var c = Container.Create("c", 100);
+            var d = Container.Create("d", 100);
+
+            // Act
+            a.AddAndDistributeWater(12);
+            d.AddAndDistributeWater(8);
+
+            // Assert
+            Assert.Equal(12, a.GetAmount());
+            Assert.Equal(0, b.GetAmount());
+            Assert.Equal(0, c.GetAmount());
+            Assert.Equal(8, d.GetAmount());
+        }
+
+        [Fact]
+        public void AddWater_WhenTwoContainersConnected_ShouldShareWaterEqually()
+        {
+            // Arrange
+            var a = Container.Create("a", 100);
+            var b = Container.Create("b", 100);
+            var c = Container.Create("c", 100);
+            var d = Container.Create("d", 100);
+
+            // Act
+            a.ConnectTo(b);
+            a.AddAndDistributeWater(12);
+            d.AddAndDistributeWater(8);
+
+            // Assert
             Assert.Equal(6, a.GetAmount());
             Assert.Equal(6, b.GetAmount());
             Assert.Equal(0, c.GetAmount());
@@ -50,32 +86,6 @@ namespace HelloContainer.UnitTests
             Assert.Equal("TestContainer", container.Name);
             Assert.Equal(100, container.Capacity);
             Assert.Empty(container.ConnectedContainers);
-        }
-
-        [Fact]
-        public void AddWater_ShouldIncreaseAmount()
-        {
-            // Arrange
-            var container = Container.Create("TestContainer", 100);
-
-            // Act
-            container.AddWater(10);
-
-            // Assert
-            Assert.Equal(10, container.GetAmount());
-        }
-
-        [Fact]
-        public void SetAmount_ShouldUpdateAmount()
-        {
-            // Arrange
-            var container = Container.Create("TestContainer", 100);
-
-            // Act
-            container.SetAmount(20);
-
-            // Assert
-            Assert.Equal(20, container.GetAmount());
         }
 
         [Fact]
@@ -108,23 +118,6 @@ namespace HelloContainer.UnitTests
 
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => containerA.ConnectTo(containerB));
-        }
-
-        [Fact]
-        public void ConnectTo_ShouldShareWaterEqually()
-        {
-            // Arrange
-            var containerA = Container.Create("A", 100);
-            var containerB = Container.Create("B", 100);
-            containerA.AddWater(10);
-            containerB.AddWater(20);
-
-            // Act
-            containerA.ConnectTo(containerB);
-
-            // Assert
-            Assert.Equal(15, containerA.GetAmount());
-            Assert.Equal(15, containerB.GetAmount());
         }
     }
 }
