@@ -30,6 +30,28 @@
 #### 代码性能
 * 算法优化
 
+## 领域设计
+
+### 模型
+#### Entity
+* 标识
+* 连续性
+
+#### Value Object
+* 无标识，不可变
+
+#### Service
+* 不属于对象，是活动/动作，而不是事物
+* 无状态
+* 控制接口粒度，避免Entity和Value Object耦合
+* 使用场景，如：处理资金转账，涉及两个账户和一些全局规则
+
+#### Module
+
+### 生命周期
+使用Factory创建和重建复杂对象的Aggregate，从而封装内部结构。最后，在生命周期中间和末尾使用Repository查找和检索持久化对象并封装基础设施。
+
+
 ## 项目结构 
 HelloContainer/  
 ├── HelloContainer.Api/              
