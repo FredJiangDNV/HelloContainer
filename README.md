@@ -51,6 +51,14 @@
 ### 生命周期
 使用Factory创建和重建复杂对象的Aggregate，从而封装内部结构。最后，在生命周期中间和末尾使用Repository查找和检索持久化对象并封装基础设施。
 
+#### Aggregate
+* 一组相关对象集合，数据修改单元
+* root，特定的entity，全局标识，外部引用
+* entity，本地标识
+* boundary
+* 数据库查询root，其他对象遍历关联
+
+#### Factory
 
 ## 项目结构 
 HelloContainer/  
