@@ -9,7 +9,6 @@ namespace HelloContainer.Application.Mappings
         public ContainerMappingProfile()
         {
             CreateMap<Container, ContainerReadDto>();
-            CreateMap<CreateContainerDto, Container>();
         }
     }
 } 

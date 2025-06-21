@@ -7,10 +7,10 @@ namespace HelloContainer.Application.Services
 {
     public class ContainerService : IContainerService
     {
-        private readonly IContainerRepository _containerRepository;
+        private readonly IRepository<Container> _containerRepository;
         private readonly IMapper _mapper;
 
-        public ContainerService(IContainerRepository containerRepository, IMapper mapper)
+        public ContainerService(IRepository<Container> containerRepository, IMapper mapper)
         {
             _containerRepository = containerRepository;
             _mapper = mapper;
@@ -18,7 +18,7 @@ namespace HelloContainer.Application.Services
 
         public async Task<ContainerReadDto> CreateContainer(CreateContainerDto createDto)
         {
-            var container = _mapper.Map<Container>(createDto);
+            var container = Container.Create(createDto.Name, createDto.Capacity);
             
             var createdContainer = await _containerRepository.Add(container);
             return _mapper.Map<ContainerReadDto>(createdContainer);
