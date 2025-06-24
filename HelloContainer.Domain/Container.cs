@@ -1,6 +1,9 @@
-﻿namespace HelloContainer.Domain
+﻿using HelloContainer.Domain.Events;
+using HelloContainer.Domain.Primitives;
+
+namespace HelloContainer.Domain
 {
-    public class Container
+    public class Container : Entity
     {
         public Guid Id { get; set; }
         public string Name { get; private set; }
@@ -18,7 +21,9 @@
 
         public static Container Create(string name, double capacity)
         {
-            return new Container(name, capacity);
+            var container = new Container(name, capacity);
+            container.Raise(new ContainerCreatedDomainEvent(Guid.NewGuid(), container.Id));
+            return container;
         }
 
         public void ConnectTo(Container other)

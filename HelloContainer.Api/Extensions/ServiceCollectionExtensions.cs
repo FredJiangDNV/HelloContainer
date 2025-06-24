@@ -5,6 +5,7 @@ using HelloContainer.Infrastructure.Services;
 using HelloContainer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using HelloContainer.Infrastructure.Common;
+using HelloContainer.Application.EventHandlers;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -12,6 +13,12 @@ namespace HelloContainer.Api.Extensions
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
+            services.AddMediatR(x =>
+            {
+                x.Lifetime = ServiceLifetime.Scoped;
+                x.RegisterServicesFromAssemblyContaining<ContainerCreatedDomainEventHandler>();
+            });
+
             services.AddAutoMapper(typeof(ContainerMappingProfile));
             services.AddDbContext<HelloContainerDbContext>(options =>
                 options.UseCosmos(
