@@ -21,29 +21,14 @@ namespace HelloContainer.Infrastructure.Common
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> Add(T entity)
-        {
-            _context.Add(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
+        public T Add(T entity)
+            => _context.Add(entity).Entity;
 
-        public async Task<T> Update(T entity)
-        {
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
-            return entity;
-        }
+        public void Update(T entity)
+            => _context.Update(entity);
 
-        public async Task Delete(Guid id)
-        {
-            var entity = await GetById(id);
-            if (entity != null)
-            {
-                _context.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
-        }
+        public void Delete(T entity)
+            => _context.Remove(entity);
 
         public async Task<bool> Exists(Guid id)
         {

@@ -4,9 +4,9 @@ namespace HelloContainer.Infrastructure.Common
     {
         Task<T?> GetById(Guid id);
         Task<IEnumerable<T>> GetAll();
-        Task<T> Add(T entity);
-        Task<T> Update(T entity);
-        Task Delete(Guid id);
+        T Add(T entity);
+        void Update(T entity);
+        void Delete(T entity);
         Task<bool> Exists(Guid id);
     }
 }
