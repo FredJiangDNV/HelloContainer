@@ -7,10 +7,10 @@ namespace HelloContainer.Application.Services
 {
     public class ContainerService : IContainerService
     {
-        private readonly IRepository<Container> _containerRepository;
+        private readonly IContainerRepository _containerRepository;
         private readonly IMapper _mapper;
 
-        public ContainerService(IRepository<Container> containerRepository, IMapper mapper)
+        public ContainerService(IContainerRepository containerRepository, IMapper mapper)
         {
             _containerRepository = containerRepository;
             _mapper = mapper;
@@ -24,9 +24,11 @@ namespace HelloContainer.Application.Services
             return _mapper.Map<ContainerReadDto>(createdContainer);
         }
 
-        public async Task<IEnumerable<ContainerReadDto>> GetContainers()
+        public async Task<IEnumerable<ContainerReadDto>> GetContainers(string? searchKeyword = null)
         {
-            var containers = await _containerRepository.GetAll();
+            var containers = string.IsNullOrEmpty(searchKeyword) ?
+                await _containerRepository.GetAll() :
+                await _containerRepository.FindAsync(x => x.Name.Contains(searchKeyword));
             return _mapper.Map<IEnumerable<ContainerReadDto>>(containers);
         }
 

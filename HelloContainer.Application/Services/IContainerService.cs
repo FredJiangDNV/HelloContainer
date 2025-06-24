@@ -5,7 +5,7 @@ namespace HelloContainer.Application.Services
     public interface IContainerService
     {
         Task<ContainerReadDto> CreateContainer(CreateContainerDto createDto);
-        Task<IEnumerable<ContainerReadDto>> GetContainers();
+        Task<IEnumerable<ContainerReadDto>> GetContainers(string? searchKeyword = null);
         Task<ContainerReadDto?> GetContainerById(Guid id);
     }
 } 

@@ -4,7 +4,6 @@ using HelloContainer.Infrastructure.Repositories;
 using HelloContainer.Infrastructure.Services;
 using HelloContainer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using HelloContainer.Domain;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -18,7 +17,7 @@ namespace HelloContainer.Api.Extensions
                     configuration.GetConnectionString("CosmosDB") ?? throw new InvalidOperationException("Connection string 'CosmosDB' not found."),
                     databaseName: configuration.GetSection("DatabaseSettings:DatabaseName").Value ?? throw new InvalidOperationException("Database name not found in configuration.")
                 ));
-            services.AddScoped<IRepository<Container>, Repository<Container>>();
+            services.AddScoped<IContainerRepository, ContainerRepository>();
             services.AddScoped<IContainerService, ContainerService>();
             services.AddScoped<DatabaseInitializer>();
 

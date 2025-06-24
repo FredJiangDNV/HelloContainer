@@ -1,4 +1,4 @@
-namespace HelloContainer.Infrastructure.Repositories
+namespace HelloContainer.Infrastructure.Common
 {
     public interface IRepository<T> where T : class
     {
@@ -9,4 +9,4 @@ namespace HelloContainer.Infrastructure.Repositories
         Task Delete(Guid id);
         Task<bool> Exists(Guid id);
     }
-} 
+}

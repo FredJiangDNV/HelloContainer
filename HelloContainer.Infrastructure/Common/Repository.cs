@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace HelloContainer.Infrastructure.Repositories
+namespace HelloContainer.Infrastructure.Common
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly HelloContainerDbContext _context;
+        protected readonly HelloContainerDbContext _context;
 
         public Repository(HelloContainerDbContext context)
         {
@@ -50,4 +50,4 @@ namespace HelloContainer.Infrastructure.Repositories
             return await _context.Set<T>().AnyAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
     }
-} 
+}

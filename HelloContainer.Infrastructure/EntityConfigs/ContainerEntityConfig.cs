@@ -8,23 +8,22 @@ namespace HelloContainer.Infrastructure.EntityConfigs
     {
         public void Configure(EntityTypeBuilder<Container> builder)
         {
-            builder.HasKey(c => c.Id);
-            
             builder.ToContainer("containers")
                 .HasDiscriminator<string>("Discriminator");
+
+            builder.HasKey(c => c.Id);
             
             builder.Property(c => c.Name)
                 .IsRequired()
-                .HasMaxLength(100)
-                .IsUnicode(false);
+                .ToJsonProperty("name");
             
             builder.Property(c => c.Amount)
                 .IsRequired()
-                .HasPrecision(18, 2);
+                .ToJsonProperty("amount");
             
             builder.Property(c => c.Capacity)
                 .IsRequired()
-                .HasPrecision(18, 2);
+                .ToJsonProperty("capacity");
         }
     }
 }

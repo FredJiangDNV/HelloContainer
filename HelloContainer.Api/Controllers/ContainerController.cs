@@ -23,9 +23,9 @@ namespace HelloContainer.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ContainerReadDto>>> GetContainers()
+        public async Task<ActionResult<IEnumerable<ContainerReadDto>>> GetContainers([FromQuery] string? searchKeyword = null)
         {
-            var containers = await _containerService.GetContainers();
+            var containers = await _containerService.GetContainers(searchKeyword);
             return Ok(containers);
         }
 
