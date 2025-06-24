@@ -60,6 +60,14 @@
 
 #### Factory
 
+### Event
+
+#### DomainEvent
+作用范围是领域内，解耦Domain和IntegrationEvent，把IntegrationEvent移到Domain外
+
+#### IntegrationEvent
+与系统中其他或外部组件交互
+
 ## 项目结构 
 HelloContainer/  
 ├── HelloContainer.Api/              
