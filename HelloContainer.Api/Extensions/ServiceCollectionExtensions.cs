@@ -6,6 +6,9 @@ using HelloContainer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using HelloContainer.Infrastructure.Common;
 using HelloContainer.Application.EventHandlers;
+using HelloContainer.Application.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -20,11 +23,19 @@ namespace HelloContainer.Api.Extensions
             });
 
             services.AddAutoMapper(typeof(ContainerMappingProfile));
+
+            // Add FluentValidation
+            services.AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssemblyContaining<CreateContainerDtoValidator>();
+
+            // Add DbContext
             services.AddDbContext<HelloContainerDbContext>(options =>
                 options.UseCosmos(
                     configuration.GetConnectionString("CosmosDB") ?? throw new InvalidOperationException("Connection string 'CosmosDB' not found."),
                     databaseName: configuration.GetSection("DatabaseSettings:DatabaseName").Value ?? throw new InvalidOperationException("Database name not found in configuration.")
                 ));
+
+            // Add Services
             services.AddScoped<IContainerRepository, ContainerRepository>();
             services.AddScoped<IContainerService, ContainerService>();
             services.AddScoped<DatabaseInitializer>();

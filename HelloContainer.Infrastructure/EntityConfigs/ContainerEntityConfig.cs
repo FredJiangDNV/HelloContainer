@@ -1,4 +1,5 @@
 ﻿using HelloContainer.Domain;
+using HelloContainer.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,10 +19,16 @@ namespace HelloContainer.Infrastructure.EntityConfigs
                 .ToJsonProperty("name");
             
             builder.Property(c => c.Amount)
+                .HasConversion(
+                    amount => amount.Value,           // Convert to database
+                    value => Amount.Create(value))    // Convert from database
                 .IsRequired()
                 .ToJsonProperty("amount");
             
             builder.Property(c => c.Capacity)
+                .HasConversion(
+                    capacity => capacity.Value,       // Convert to database
+                    value => Capacity.Create(value))  // Convert from database
                 .IsRequired()
                 .ToJsonProperty("capacity");
         }

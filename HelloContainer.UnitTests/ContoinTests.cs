@@ -1,18 +1,10 @@
-﻿using Xunit.Abstractions;
-using Xunit;
+﻿using Xunit;
 using HelloContainer.Domain;
 
 namespace HelloContainer.UnitTests
 {
     public class ContoinTests
     {
-        private readonly ITestOutputHelper outputHelper;
-
-        public ContoinTests(ITestOutputHelper outputHelper)
-        {
-            this.outputHelper = outputHelper;
-        }
-
         [Fact]
         public void ConnectTo_WhenTwoContainersConnected_ShouldShareWaterEqually()
         {
@@ -84,7 +76,7 @@ namespace HelloContainer.UnitTests
             // Assert
             Assert.NotEqual(Guid.Empty, container.Id);
             Assert.Equal("TestContainer", container.Name);
-            Assert.Equal(100, container.Capacity);
+            Assert.Equal(100, container.Capacity.Value);
             Assert.Empty(container.ConnectedContainers);
         }
 

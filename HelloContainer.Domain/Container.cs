@@ -1,5 +1,6 @@
 ﻿using HelloContainer.Domain.Events;
 using HelloContainer.Domain.Primitives;
+using HelloContainer.Domain.ValueObjects;
 
 namespace HelloContainer.Domain
 {
@@ -7,21 +8,23 @@ namespace HelloContainer.Domain
     {
         public Guid Id { get; set; }
         public string Name { get; private set; }
-        public double Amount { get; private set; }
-        public double Capacity { get; private set; }
+        public Amount Amount { get; private set; }
+        public Capacity Capacity { get; private set; }
         public List<Container> ConnectedContainers { get; private set; }
 
-        private Container(string name, double capacity)
+        private Container(string name, Capacity capacity)
         {
             Id = Guid.NewGuid();
             Name = name;
             Capacity = capacity;
+            Amount = Amount.Create(0);
             ConnectedContainers = new List<Container>();
         }
 
         public static Container Create(string name, double capacity)
         {
-            var container = new Container(name, capacity);
+            var containerCapacity = Capacity.Create(capacity);
+            var container = new Container(name, containerCapacity);
             container.Raise(new ContainerCreatedDomainEvent(Guid.NewGuid(), container.Id));
             return container;
         }
@@ -51,7 +54,7 @@ namespace HelloContainer.Domain
             var allContainers = ConnectedContainers.Concat(other.ConnectedContainers).Distinct().ToList();
             foreach (var c in allContainers)
             {
-                c.SetAmount(newAmount);
+                c.SetAmount(Amount.Create(newAmount));
             }
         }
 
@@ -60,18 +63,18 @@ namespace HelloContainer.Domain
             var currentGroupSize = ConnectedContainers.Count() + 1;
             var otherGroupSize = other.ConnectedContainers.Count() + 1;
 
-            double currentGroupTotalAmount = currentGroupSize * Amount;
-            double otherGroupTotalAmount = otherGroupSize * other.Amount;
+            double currentGroupTotalAmount = currentGroupSize * Amount.Value;
+            double otherGroupTotalAmount = otherGroupSize * other.Amount.Value;
 
             return (currentGroupTotalAmount + otherGroupTotalAmount) / (currentGroupSize + otherGroupSize);
         }
 
         public double GetAmount()
         {
-            return Amount;
+            return Amount.Value;
         }
 
-        public void SetAmount(double newAmount)
+        public void SetAmount(Amount newAmount)
         {
             Amount = newAmount;
         }
@@ -79,7 +82,7 @@ namespace HelloContainer.Domain
         public void AddAndDistributeWater(double amount)
         {
             var amountPerContainer = amount / (ConnectedContainers.Count + 1);
-            Amount += amountPerContainer;
+            Amount = Amount.Create(Amount.Value + amountPerContainer);
             foreach (var container in ConnectedContainers)
             {
                 container.AddWater(amountPerContainer);
@@ -88,7 +91,13 @@ namespace HelloContainer.Domain
 
         public void AddWater(double amount)
         {
-            Amount += amount;
+            Amount = Amount.Create(Amount.Value + amount);
+        }
+
+        public bool IsOverflowing(double thresholdPercentage = 0.8)
+        {
+            var threshold = Capacity.Value * thresholdPercentage;
+            return Amount.Value >= threshold;
         }
     }
 }
