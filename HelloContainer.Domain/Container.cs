@@ -1,5 +1,6 @@
 ﻿using HelloContainer.Domain.Events;
 using HelloContainer.Domain.Primitives;
+using HelloContainer.Domain.Exceptions;
 
 namespace HelloContainer.Domain
 {
@@ -32,17 +33,17 @@ namespace HelloContainer.Domain
         {
             if (other == null)
             {
-                throw new ArgumentNullException(nameof(other), "Container cannot be null.");
+                throw new InvalidConnectionException("Container cannot be null.");
             }
 
             if (other.Id == Id)
             {
-                throw new InvalidOperationException("Cannot connect a container to itself.");
+                throw new InvalidConnectionException(Id, other.Id, "Cannot connect a container to itself.");
             }
 
             if (ConnectedContainers.Contains(other))
             {
-                throw new InvalidOperationException("Container is already connected.");
+                throw new InvalidConnectionException(Id, other.Id, "Container is already connected.");
             }
 
             double newAmount = CalculateNewAmount(other);
@@ -62,26 +63,38 @@ namespace HelloContainer.Domain
             var currentGroupSize = ConnectedContainers.Count() + 1;
             var otherGroupSize = other.ConnectedContainers.Count() + 1;
 
-            double currentGroupTotalAmount = currentGroupSize * Amount;
-            double otherGroupTotalAmount = otherGroupSize * other.Amount;
+            double currentGroupTotalAmount = currentGroupSize * Amount.Value;
+            double otherGroupTotalAmount = otherGroupSize * other.Amount.Value;
 
             return (currentGroupTotalAmount + otherGroupTotalAmount) / (currentGroupSize + otherGroupSize);
         }
 
         public double GetAmount()
         {
-            return Amount;
+            return Amount.Value;
         }
 
         public void SetAmount(Amount newAmount)
         {
+            if (newAmount.Value > Capacity.Value)
+            {
+                throw new ContainerOverflowException(newAmount.Value, Capacity.Value);
+            }
+            
             Amount = newAmount;
         }
 
         public void AddAndDistributeWater(double amount)
         {
             var amountPerContainer = amount / (ConnectedContainers.Count + 1);
-            Amount = Amount.Create(Amount + amountPerContainer);
+            var newAmount = Amount.Value + amountPerContainer;
+            
+            if (newAmount > Capacity.Value)
+            {
+                throw new ContainerOverflowException(newAmount, Capacity.Value);
+            }
+            
+            Amount = Amount.Create(newAmount);
             foreach (var container in ConnectedContainers)
             {
                 container.AddWater(amountPerContainer);
@@ -90,13 +103,14 @@ namespace HelloContainer.Domain
 
         public void AddWater(double amount)
         {
-            Amount = Amount.Create(Amount + amount);
-        }
-
-        public bool IsOverflowing(double thresholdPercentage = 0.8)
-        {
-            var threshold = Capacity * thresholdPercentage;
-            return Amount >= threshold;
+            var newAmount = Amount.Value + amount;
+            
+            if (newAmount > Capacity.Value)
+            {
+                throw new ContainerOverflowException(newAmount, Capacity.Value);
+            }
+            
+            Amount = Amount.Create(newAmount);
         }
     }
 }

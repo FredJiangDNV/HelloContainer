@@ -1,6 +1,7 @@
 using AutoMapper;
 using HelloContainer.Application.DTOs;
 using HelloContainer.Domain;
+using HelloContainer.Domain.Exceptions;
 using HelloContainer.Infrastructure.Common;
 using HelloContainer.Infrastructure.Repositories;
 
@@ -40,7 +41,45 @@ namespace HelloContainer.Application.Services
         public async Task<ContainerReadDto?> GetContainerById(Guid id)
         {
             var container = await _containerRepository.GetById(id);
+            if (container == null)
+            {
+                throw new ContainerNotFoundException(id);
+            }
             return _mapper.Map<ContainerReadDto>(container);
+        }
+
+        public async Task<ContainerReadDto> AddWater(Guid containerId, double amount)
+        {
+            var container = await _containerRepository.GetById(containerId);
+            if (container == null)
+            {
+                throw new ContainerNotFoundException(containerId);
+            }
+
+            container.AddWater(amount);
+            await _unitOfWork.SaveChangesAsync();
+            
+            return _mapper.Map<ContainerReadDto>(container);
+        }
+
+        public async Task<ContainerReadDto> ConnectContainers(Guid sourceContainerId, Guid targetContainerId)
+        {
+            var sourceContainer = await _containerRepository.GetById(sourceContainerId);
+            if (sourceContainer == null)
+            {
+                throw new ContainerNotFoundException(sourceContainerId);
+            }
+
+            var targetContainer = await _containerRepository.GetById(targetContainerId);
+            if (targetContainer == null)
+            {
+                throw new ContainerNotFoundException(targetContainerId);
+            }
+
+            sourceContainer.ConnectTo(targetContainer);
+            await _unitOfWork.SaveChangesAsync();
+            
+            return _mapper.Map<ContainerReadDto>(sourceContainer);
         }
     }
 } 

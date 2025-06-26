@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using HelloContainer.Domain;
+using HelloContainer.Domain.Exceptions;
 
 namespace HelloContainer.UnitTests
 {
@@ -87,7 +88,7 @@ namespace HelloContainer.UnitTests
             var container = Container.Create("TestContainer", 100);
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => container.ConnectTo(null));
+            Assert.Throws<InvalidConnectionException>(() => container.ConnectTo(null));
         }
 
         [Fact]
@@ -97,7 +98,7 @@ namespace HelloContainer.UnitTests
             var container = Container.Create("TestContainer", 100);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => container.ConnectTo(container));
+            Assert.Throws<InvalidConnectionException>(() => container.ConnectTo(container));
         }
 
         [Fact]
@@ -109,7 +110,7 @@ namespace HelloContainer.UnitTests
             containerA.ConnectTo(containerB);
 
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => containerA.ConnectTo(containerB));
+            Assert.Throws<InvalidConnectionException>(() => containerA.ConnectTo(containerB));
         }
     }
 }

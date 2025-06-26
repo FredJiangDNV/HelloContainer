@@ -1,5 +1,3 @@
-using HelloContainer.Domain.Primitives;
-
 namespace HelloContainer.Domain
 {
     public record Capacity(double Value)
