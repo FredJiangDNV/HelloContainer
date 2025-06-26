@@ -10,6 +10,5 @@
         {
             _domainEvents.Add(domainEvent);
         }
-
     }
 }

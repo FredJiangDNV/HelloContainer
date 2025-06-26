@@ -4,7 +4,7 @@ using HelloContainer.Domain.Exceptions;
 
 namespace HelloContainer.Domain
 {
-    public class Container : Entity
+    public class Container : Entity, IAggregateRoot
     {
         public Guid Id { get; set; }
         public string Name { get; private set; }
