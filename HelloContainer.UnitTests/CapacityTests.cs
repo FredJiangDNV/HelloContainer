@@ -1,4 +1,4 @@
-using HelloContainer.Domain.ValueObjects;
+using HelloContainer.Domain;
 using Xunit;
 
 namespace HelloContainer.UnitTests
@@ -16,7 +16,7 @@ namespace HelloContainer.UnitTests
 
             // Assert
             Assert.NotNull(capacity);
-            Assert.Equal(validValue, capacity.Value);
+            Assert.Equal(validValue, capacity);
         }
 
         [Fact]

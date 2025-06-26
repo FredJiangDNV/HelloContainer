@@ -1,5 +1,4 @@
 ﻿using HelloContainer.Domain;
-using HelloContainer.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

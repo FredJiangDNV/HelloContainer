@@ -1,6 +1,5 @@
 ﻿using HelloContainer.Domain.Events;
 using HelloContainer.Domain.Primitives;
-using HelloContainer.Domain.ValueObjects;
 
 namespace HelloContainer.Domain
 {
@@ -63,15 +62,15 @@ namespace HelloContainer.Domain
             var currentGroupSize = ConnectedContainers.Count() + 1;
             var otherGroupSize = other.ConnectedContainers.Count() + 1;
 
-            double currentGroupTotalAmount = currentGroupSize * Amount.Value;
-            double otherGroupTotalAmount = otherGroupSize * other.Amount.Value;
+            double currentGroupTotalAmount = currentGroupSize * Amount;
+            double otherGroupTotalAmount = otherGroupSize * other.Amount;
 
             return (currentGroupTotalAmount + otherGroupTotalAmount) / (currentGroupSize + otherGroupSize);
         }
 
         public double GetAmount()
         {
-            return Amount.Value;
+            return Amount;
         }
 
         public void SetAmount(Amount newAmount)
@@ -82,7 +81,7 @@ namespace HelloContainer.Domain
         public void AddAndDistributeWater(double amount)
         {
             var amountPerContainer = amount / (ConnectedContainers.Count + 1);
-            Amount = Amount.Create(Amount.Value + amountPerContainer);
+            Amount = Amount.Create(Amount + amountPerContainer);
             foreach (var container in ConnectedContainers)
             {
                 container.AddWater(amountPerContainer);
@@ -91,13 +90,13 @@ namespace HelloContainer.Domain
 
         public void AddWater(double amount)
         {
-            Amount = Amount.Create(Amount.Value + amount);
+            Amount = Amount.Create(Amount + amount);
         }
 
         public bool IsOverflowing(double thresholdPercentage = 0.8)
         {
-            var threshold = Capacity.Value * thresholdPercentage;
-            return Amount.Value >= threshold;
+            var threshold = Capacity * thresholdPercentage;
+            return Amount >= threshold;
         }
     }
 }
