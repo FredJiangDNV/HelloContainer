@@ -91,7 +91,7 @@ namespace HelloContainer.Domain
             
             if (newAmount > Capacity.Value)
             {
-                throw new ContainerOverflowException(newAmount, Capacity.Value);
+                throw new ContainerOverflowException(amount, Capacity.Value);
             }
             
             Amount = Amount.Create(newAmount);
@@ -107,7 +107,7 @@ namespace HelloContainer.Domain
             
             if (newAmount > Capacity.Value)
             {
-                throw new ContainerOverflowException(newAmount, Capacity.Value);
+                throw new ContainerOverflowException(amount, Capacity.Value);
             }
             
             Amount = Amount.Create(newAmount);

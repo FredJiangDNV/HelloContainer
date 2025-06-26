@@ -1,4 +1,5 @@
 using HelloContainer.Api.Extensions;
+using HelloContainer.Api.Middleware;
 using HelloContainer.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Add domain exception handler middleware
+app.UseDomainExceptionHandler();
 
 app.UseAuthorization();
 
