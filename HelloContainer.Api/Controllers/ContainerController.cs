@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HelloContainer.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]s")]
     public class ContainerController : ControllerBase
     {
         private readonly IContainerService _containerService;
@@ -36,14 +36,14 @@ namespace HelloContainer.Api.Controllers
             return Ok(container);
         }
 
-        [HttpPost("{id}/add-water")]
+        [HttpPost("{id}/water")]
         public async Task<ActionResult<ContainerReadDto>> AddWater(Guid id, [FromBody] AddWaterDto addWaterDto)
         {
             var container = await _containerService.AddWater(id, addWaterDto.Amount);
             return Ok(container);
         }
 
-        [HttpPost("connect")]
+        [HttpPost("connections")]
         public async Task<ActionResult<ContainerReadDto>> ConnectContainers([FromBody] ConnectContainersDto connectDto)
         {
             var container = await _containerService.ConnectContainers(connectDto.SourceContainerId, connectDto.TargetContainerId);

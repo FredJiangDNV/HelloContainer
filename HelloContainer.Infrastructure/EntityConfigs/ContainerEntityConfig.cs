@@ -9,6 +9,7 @@ namespace HelloContainer.Infrastructure.EntityConfigs
         public void Configure(EntityTypeBuilder<Container> builder)
         {
             builder.ToContainer("containers")
+                .HasPartitionKey(c => c.Id)
                 .HasDiscriminator<string>("Discriminator");
 
             builder.HasKey(c => c.Id);
