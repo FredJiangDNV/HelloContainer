@@ -21,24 +21,35 @@ namespace HelloContainer.Infrastructure
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var domainEvents = ChangeTracker
-                .Entries<Entity>()
-                .Select(e => e.Entity)
-                .Where(e => e.DomainEvents.Any())
-                .SelectMany(e => e.DomainEvents)
-                .ToList();
-
             // Before
 
             var result = await base.SaveChangesAsync(cancellationToken);
 
             // After
+            await PublishDomainEventsAsync();
+            return result;
+        }
+
+        private async Task PublishDomainEventsAsync()
+        {
+            var domainEvents = ChangeTracker
+                .Entries<Entity>()
+                .Select(entry => entry.Entity)
+                .Where(e => e.DomainEvents.Any())
+                .SelectMany(entity =>
+                {
+                    var domainEvents = entity.GetDomainEvents();
+
+                    entity.ClearDomainEvents();
+
+                    return domainEvents;
+                })
+                .ToList();
+
             foreach (var domainEvent in domainEvents)
             {
-                await _publisher.Publish(domainEvent, cancellationToken);
+                await _publisher.Publish(domainEvent);
             }
-
-            return result;
         }
     }
 }

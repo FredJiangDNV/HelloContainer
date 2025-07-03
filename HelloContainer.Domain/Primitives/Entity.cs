@@ -6,6 +6,16 @@
 
         public ICollection<DomainEvent> DomainEvents => _domainEvents;
 
+        public IReadOnlyList<DomainEvent> GetDomainEvents()
+        {
+            return _domainEvents.ToList();
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents.Clear();
+        }
+
         protected void Raise(DomainEvent domainEvent)
         {
             _domainEvents.Add(domainEvent);
