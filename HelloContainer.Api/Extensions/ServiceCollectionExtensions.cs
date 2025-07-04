@@ -1,7 +1,6 @@
 ﻿using HelloContainer.Application.Mappings;
 using HelloContainer.Application.Services;
 using HelloContainer.Infrastructure.Repositories;
-using HelloContainer.Infrastructure.Services;
 using HelloContainer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using HelloContainer.Infrastructure.Common;
@@ -38,7 +37,6 @@ namespace HelloContainer.Api.Extensions
             // Add Services
             services.AddScoped<IContainerRepository, ContainerRepository>();
             services.AddScoped<IContainerService, ContainerService>();
-            services.AddScoped<DatabaseInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;

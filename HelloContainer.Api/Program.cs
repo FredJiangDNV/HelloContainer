@@ -1,6 +1,5 @@
 using HelloContainer.Api.Extensions;
 using HelloContainer.Api.Middleware;
-using HelloContainer.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -12,13 +11,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddServices(configuration, builder.Environment);
 
 var app = builder.Build();
-
-// Initialize database
-using (var scope = app.Services.CreateScope())
-{
-    var databaseInitializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
-    await databaseInitializer.InitializeAsync();
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

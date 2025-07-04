@@ -13,7 +13,8 @@ namespace HelloContainer.Infrastructure.EntityConfigs
                 .HasDiscriminator<string>("Discriminator");
 
             builder.HasKey(c => c.Id);
-            
+
+            builder.Property(c => c.Id).ToJsonProperty("id");
             builder.Property(c => c.Name)
                 .IsRequired()
                 .ToJsonProperty("name");
@@ -31,6 +32,8 @@ namespace HelloContainer.Infrastructure.EntityConfigs
                     value => Capacity.Create(value))  // Convert from database
                 .IsRequired()
                 .ToJsonProperty("capacity");
+
+            builder.Ignore(t => t.DomainEvents);
         }
     }
 }
