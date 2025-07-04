@@ -1,8 +1,3 @@
-namespace HelloContainer.Application.DTOs
-{
-    public class ConnectContainersDto
-    {
-        public Guid SourceContainerId { get; set; }
-        public Guid TargetContainerId { get; set; }
-    }
-} 
+namespace HelloContainer.Application.DTOs;
+
+public record ConnectContainersDto(Guid SourceContainerId, Guid TargetContainerId);

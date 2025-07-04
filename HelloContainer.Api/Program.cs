@@ -29,3 +29,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+namespace HelloContainer.Api
+{
+    internal partial class Program { }
+}
