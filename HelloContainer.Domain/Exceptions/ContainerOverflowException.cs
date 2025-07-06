@@ -6,9 +6,9 @@ namespace HelloContainer.Domain.Exceptions
         {
         }
 
-        public ContainerOverflowException(double amount, double capacity) 
+        public ContainerOverflowException(double amount, double capacity)
             : base($"Cannot add {amount} units. Container capacity is {capacity} units.")
         {
         }
     }
-} 
+}

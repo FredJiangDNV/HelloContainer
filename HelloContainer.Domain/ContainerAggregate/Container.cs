@@ -1,20 +1,18 @@
-﻿using HelloContainer.Domain.Events;
-using HelloContainer.Domain.Primitives;
+﻿using HelloContainer.Domain.Common;
+using HelloContainer.Domain.ContainerAggregate.Events;
 using HelloContainer.Domain.Exceptions;
 
-namespace HelloContainer.Domain
+namespace HelloContainer.Domain.ContainerAggregate
 {
     public class Container : Entity, IAggregateRoot
     {
-        public Guid Id { get; set; }
         public string Name { get; private set; }
         public Amount Amount { get; private set; }
         public Capacity Capacity { get; private set; }
         public IList<Container> ConnectedContainers { get; private set; }
 
-        private Container(string name, Capacity capacity)
+        private Container(string name, Capacity capacity) : base(Guid.NewGuid())
         {
-            Id = Guid.NewGuid();
             Name = name;
             Capacity = capacity;
             Amount = Amount.Create(0);
@@ -78,6 +76,18 @@ namespace HelloContainer.Domain
                 }
             }
             return visited.ToList();
+        }
+
+        public void Disconnect(Container other)
+        {
+            if (other == null)
+                throw new InvalidConnectionException("Container cannot be null.");
+
+            if (!ConnectedContainers.Contains(other))
+                throw new InvalidConnectionException(Id, other.Id, "Container is not connected.");
+
+            ConnectedContainers.Remove(other);
+            other.ConnectedContainers.Remove(this);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using HelloContainer.Domain.Primitives;
+﻿using HelloContainer.Domain.Common;
 using HelloContainer.Infrastructure.EntityConfigs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

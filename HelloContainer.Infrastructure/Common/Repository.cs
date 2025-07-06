@@ -1,3 +1,4 @@
+using HelloContainer.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace HelloContainer.Infrastructure.Common

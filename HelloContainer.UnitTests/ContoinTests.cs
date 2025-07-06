@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using HelloContainer.Domain;
+using HelloContainer.Domain.ContainerAggregate;
 using HelloContainer.Domain.Exceptions;
 
 namespace HelloContainer.UnitTests
@@ -109,6 +109,15 @@ namespace HelloContainer.UnitTests
 
             a.AddWater(5); // a:21, b:21, c:21, d:21, e:21
             AssertAmount(21, 21, 21, 21, 21);
+
+            a.AddWater(-10); // a:19, b:19, c:19, d:19, e:19
+            AssertAmount(19, 19, 19, 19, 19);
+
+            d.Disconnect(e); // a:19, b:19, c:19, d:19, e:19
+            AssertAmount(19, 19, 19, 19, 19);
+
+            a.AddWater(10); // a:21.5, b:21.5, c:21.5, d:21.5, e:19
+            AssertAmount(21.5, 21.5, 21.5, 21.5, 19);
 
             void AssertAmount(double aAmount, double bAmount, double cAmount, double dAmount, double eAmount)
             {

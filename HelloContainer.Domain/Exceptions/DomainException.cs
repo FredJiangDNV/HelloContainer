@@ -10,4 +10,4 @@ namespace HelloContainer.Domain.Exceptions
         {
         }
     }
-} 
+}

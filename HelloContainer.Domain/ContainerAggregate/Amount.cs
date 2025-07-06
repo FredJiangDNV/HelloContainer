@@ -1,4 +1,4 @@
-namespace HelloContainer.Domain
+namespace HelloContainer.Domain.ContainerAggregate
 {
     public record Amount(double Value)
     {

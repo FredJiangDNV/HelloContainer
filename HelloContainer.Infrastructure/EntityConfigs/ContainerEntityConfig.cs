@@ -1,4 +1,4 @@
-﻿using HelloContainer.Domain;
+﻿using HelloContainer.Domain.ContainerAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

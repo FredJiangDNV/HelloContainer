@@ -8,6 +8,8 @@ using HelloContainer.Application.EventHandlers;
 using HelloContainer.Application.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using HelloContainer.Domain.Abstractions;
+using HelloContainer.Domain.Services;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -37,6 +39,7 @@ namespace HelloContainer.Api.Extensions
             // Add Services
             services.AddScoped<IContainerRepository, ContainerRepository>();
             services.AddScoped<IContainerService, ContainerService>();
+            services.AddScoped<IContainerManager, ContainerManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;

@@ -1,8 +1,7 @@
-﻿using HelloContainer.Domain;
-using HelloContainer.Infrastructure.Common;
+﻿using HelloContainer.Domain.ContainerAggregate;
 using System.Linq.Expressions;
 
-namespace HelloContainer.Infrastructure.Repositories
+namespace HelloContainer.Domain.Abstractions
 {
     public interface IContainerRepository : IRepository<Container>
     {

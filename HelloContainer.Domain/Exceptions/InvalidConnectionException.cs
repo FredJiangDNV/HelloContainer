@@ -6,9 +6,9 @@ namespace HelloContainer.Domain.Exceptions
         {
         }
 
-        public InvalidConnectionException(Guid containerId, Guid targetContainerId, string reason) 
+        public InvalidConnectionException(Guid containerId, Guid targetContainerId, string reason)
             : base($"Cannot connect container {containerId} to {targetContainerId}. {reason}")
         {
         }
     }
-} 
+}

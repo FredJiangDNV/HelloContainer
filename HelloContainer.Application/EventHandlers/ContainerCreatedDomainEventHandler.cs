@@ -1,4 +1,4 @@
-﻿using HelloContainer.Domain.Events;
+﻿using HelloContainer.Domain.ContainerAggregate.Events;
 using MediatR;
 
 namespace HelloContainer.Application.EventHandlers

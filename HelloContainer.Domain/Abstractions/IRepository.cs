@@ -1,4 +1,4 @@
-namespace HelloContainer.Infrastructure.Common
+namespace HelloContainer.Domain.Abstractions
 {
     public interface IRepository<T> where T : class
     {

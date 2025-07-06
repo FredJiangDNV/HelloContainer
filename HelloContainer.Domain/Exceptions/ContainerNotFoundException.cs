@@ -6,9 +6,9 @@ namespace HelloContainer.Domain.Exceptions
         {
         }
 
-        public ContainerNotFoundException(Guid containerId) 
+        public ContainerNotFoundException(Guid containerId)
             : base($"Container with ID {containerId} was not found.")
         {
         }
     }
-} 
+}

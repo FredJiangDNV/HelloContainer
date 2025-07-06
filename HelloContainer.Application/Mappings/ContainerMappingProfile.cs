@@ -1,6 +1,6 @@
 using AutoMapper;
 using HelloContainer.Application.DTOs;
-using HelloContainer.Domain;
+using HelloContainer.Domain.ContainerAggregate;
 
 namespace HelloContainer.Application.Mappings
 {

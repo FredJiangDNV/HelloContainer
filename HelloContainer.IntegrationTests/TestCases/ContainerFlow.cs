@@ -70,6 +70,39 @@ public class ContainerFlow : IClassFixture<HelloContainerFixture>
         var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
         result!.Name.Should().Be("A");
     }
+
+    [Fact]
+    public async Task A040_AddWater_To_A()
+    {
+        // Arrange
+        var addWaterDto = new AddWaterDto(10);
+
+        // Act
+        var response = await this._fixture.Client.PostAsJsonAsync($"/api/containers/{_fixture.ContainerAId}/water", addWaterDto);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
+        result!.Name.Should().Be("A");
+        result!.Amount.Should().Be(5);
+    }
+
+
+    [Fact]
+    public async Task A050_GetWater_B()
+    {
+        // Arrange
+        var addWaterDto = new AddWaterDto(10);
+
+        // Act
+        var response = await this._fixture.Client.GetAsync($"/api/containers/{_fixture.ContainerBId}");
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
+        result!.Name.Should().Be("B");
+        result!.Amount.Should().Be(5);
+    }
 }
 
 public class AlphabeticalOrderer : ITestCaseOrderer

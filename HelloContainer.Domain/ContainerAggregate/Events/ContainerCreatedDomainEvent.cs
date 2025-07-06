@@ -1,6 +1,6 @@
-﻿using HelloContainer.Domain.Primitives;
+﻿using HelloContainer.Domain.Common;
 
-namespace HelloContainer.Domain.Events
+namespace HelloContainer.Domain.ContainerAggregate.Events
 {
     public record ContainerCreatedDomainEvent(Guid id, Guid containerId) : DomainEvent(id);
 }
