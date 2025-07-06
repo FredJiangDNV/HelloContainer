@@ -7,5 +7,7 @@ namespace HelloContainer.Domain.Services
         Task<Container?> AddWater(Guid containerId, double amount);
 
         Task<Container> ConnectContainers(Guid sourceContainerId, Guid targetContainerId);
+
+        Task<Container> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId);
     }
 }

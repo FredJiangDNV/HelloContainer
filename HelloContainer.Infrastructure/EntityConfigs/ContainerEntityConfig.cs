@@ -33,6 +33,10 @@ namespace HelloContainer.Infrastructure.EntityConfigs
                 .IsRequired()
                 .ToJsonProperty("capacity");
 
+            builder.Property(c => c.ConnectedContainerIdsRaw)
+             .ToJsonProperty("connectedContainerIds")
+             .IsRequired();
+
             builder.Ignore(t => t.DomainEvents);
         }
     }

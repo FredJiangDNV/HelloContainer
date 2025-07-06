@@ -59,5 +59,12 @@ namespace HelloContainer.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ContainerReadDto>(sourceContainer);
         }
+
+        public async Task<ContainerReadDto> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId)
+        {
+            var sourceContainer = await _containerManager.DisconnectContainers(sourceContainerId, targetContainerId);
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<ContainerReadDto>(sourceContainer);
+        }
     }
 } 

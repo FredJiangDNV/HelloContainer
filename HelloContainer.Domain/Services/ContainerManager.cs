@@ -17,30 +17,89 @@ namespace HelloContainer.Domain.Services
         {
             var container = await _repository.GetById(containerId);
             if (container == null)
-            {
                 throw new ContainerNotFoundException(containerId);
-            }
 
-            container.AddWater(amount);
+            await SetWaterForAllConnectedContainers(containerId, amount);
             return container;
         }
 
         public async Task<Container> ConnectContainers(Guid sourceContainerId, Guid targetContainerId)
         {
+            var sourceContainer = await GetContainerOrThrow(sourceContainerId);
+            var targetContainer = await GetContainerOrThrow(targetContainerId);
+
+            sourceContainer!.ConnectTo(targetContainerId);
+            targetContainer!.ConnectTo(sourceContainerId);
+
+            await SetWaterForAllConnectedContainers(sourceContainerId);
+            return sourceContainer;
+        }
+
+        private async Task SetWaterForAllConnectedContainers(Guid containerId, double amount = 0)
+        {
+            var allConnectedContainers = await GetAllConnectedContainers(containerId);
+            double total = allConnectedContainers.Sum(c => c.Amount.Value) + amount;
+            double avg = total / allConnectedContainers.Count;
+
+            foreach (var c in allConnectedContainers)
+                c.SetWater(avg);
+        }
+
+        private async Task<Container?> GetContainerOrThrow(Guid sourceContainerId)
+        {
             var sourceContainer = await _repository.GetById(sourceContainerId);
             if (sourceContainer == null)
-            {
                 throw new ContainerNotFoundException(sourceContainerId);
-            }
-
-            var targetContainer = await _repository.GetById(targetContainerId);
-            if (targetContainer == null)
-            {
-                throw new ContainerNotFoundException(targetContainerId);
-            }
-
-            sourceContainer.ConnectTo(targetContainer);
             return sourceContainer;
+        }
+
+        public async Task<Container> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId)
+        {
+            var sourceContainer = await GetContainerOrThrow(sourceContainerId);
+            var targetContainer = await GetContainerOrThrow(targetContainerId);
+
+            sourceContainer!.Disconnect(targetContainerId);
+            targetContainer!.Disconnect(sourceContainerId);
+
+            return sourceContainer;
+        }
+
+        private async Task<List<Container>> GetAllConnectedContainers(Guid containerId)
+        {
+            var visited = new HashSet<Guid>();
+            var queue = new Queue<Guid>();
+            queue.Enqueue(containerId);
+            visited.Add(containerId);
+
+            while (queue.Count > 0)
+            {
+                var currentId = queue.Dequeue();
+                var currentContainer = await _repository.GetById(currentId);
+                
+                if (currentContainer == null)
+                    continue;
+
+                foreach (var connectedId in currentContainer.ConnectedContainerIds)
+                {
+                    if (!visited.Contains(connectedId))
+                    {
+                        visited.Add(connectedId);
+                        queue.Enqueue(connectedId);
+                    }
+                }
+            }
+
+            var result = new List<Container>();
+            foreach (var id in visited)
+            {
+                var container = await _repository.GetById(id);
+                if (container != null)
+                {
+                    result.Add(container);
+                }
+            }
+
+            return result;
         }
     }
 }

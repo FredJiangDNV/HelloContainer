@@ -9,5 +9,6 @@ namespace HelloContainer.Application.Services
         Task<ContainerReadDto?> GetContainerById(Guid id);
         Task<ContainerReadDto> AddWater(Guid containerId, double amount);
         Task<ContainerReadDto> ConnectContainers(Guid sourceContainerId, Guid targetContainerId);
+        Task<ContainerReadDto> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId);
     }
 } 

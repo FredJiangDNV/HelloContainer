@@ -4,38 +4,38 @@ using HelloContainer.Domain.Exceptions;
 
 namespace HelloContainer.UnitTests
 {
-    public class ContoinTests
+    public class ContainerTests
     {
         [Fact]
-        public void ConnectTo_NullContainer_ShouldThrowArgumentNullException()
+        public void ConnectTo_EmptyGuid_ShouldThrowInvalidConnectionException()
         {
             // Arrange
             var container = Container.Create("TestContainer", 100);
 
             // Act & Assert
-            Assert.Throws<InvalidConnectionException>(() => container.ConnectTo(null));
+            Assert.Throws<InvalidConnectionException>(() => container.ConnectTo(Guid.Empty));
         }
 
         [Fact]
-        public void ConnectTo_Self_ShouldThrowInvalidOperationException()
+        public void ConnectTo_Self_ShouldThrowInvalidConnectionException()
         {
             // Arrange
             var container = Container.Create("TestContainer", 100);
 
             // Act & Assert
-            Assert.Throws<InvalidConnectionException>(() => container.ConnectTo(container));
+            Assert.Throws<InvalidConnectionException>(() => container.ConnectTo(container.Id));
         }
 
         [Fact]
-        public void ConnectTo_AlreadyConnected_ShouldThrowInvalidOperationException()
+        public void ConnectTo_AlreadyConnected_ShouldThrowInvalidConnectionException()
         {
             // Arrange
             var containerA = Container.Create("A", 100);
             var containerB = Container.Create("B", 100);
-            containerA.ConnectTo(containerB);
+            containerA.ConnectTo(containerB.Id);
 
             // Act & Assert
-            Assert.Throws<InvalidConnectionException>(() => containerA.ConnectTo(containerB));
+            Assert.Throws<InvalidConnectionException>(() => containerA.ConnectTo(containerB.Id));
         }
 
         [Fact]
@@ -48,7 +48,47 @@ namespace HelloContainer.UnitTests
             Assert.NotEqual(Guid.Empty, container.Id);
             Assert.Equal("TestContainer", container.Name);
             Assert.Equal(100, container.Capacity.Value);
-            Assert.Empty(container.ConnectedContainers);
+            Assert.Empty(container.ConnectedContainerIds);
+        }
+
+        [Fact]
+        public void ConnectTo_WhenTwoContainersConnected_ShouldAddConnection()
+        {
+            // Arrange
+            var a = Container.Create("a", 100);
+            var b = Container.Create("b", 100);
+
+            // Act
+            a.ConnectTo(b.Id);
+
+            // Assert
+            Assert.Contains(b.Id, a.ConnectedContainerIds);
+        }
+
+        [Fact]
+        public void Disconnect_WhenContainersConnected_ShouldRemoveConnection()
+        {
+            // Arrange
+            var a = Container.Create("a", 100);
+            var b = Container.Create("b", 100);
+            a.ConnectTo(b.Id);
+
+            // Act
+            a.Disconnect(b.Id);
+
+            // Assert
+            Assert.DoesNotContain(b.Id, a.ConnectedContainerIds);
+        }
+
+        [Fact]
+        public void Disconnect_WhenNotConnected_ShouldThrowInvalidConnectionException()
+        {
+            // Arrange
+            var a = Container.Create("a", 100);
+            var b = Container.Create("b", 100);
+
+            // Act & Assert
+            Assert.Throws<InvalidConnectionException>(() => a.Disconnect(b.Id));
         }
 
         [Fact]
@@ -61,9 +101,9 @@ namespace HelloContainer.UnitTests
             var d = Container.Create("d", 100);
 
             // Act
-            a.AddWater(12);
-            d.AddWater(8);
-            a.ConnectTo(b);
+            a.SetWater(12);
+            d.SetWater(8);
+            a.ConnectTo(b.Id);
 
             // Assert
             Assert.Equal(6, a.Amount.Value);
@@ -83,40 +123,40 @@ namespace HelloContainer.UnitTests
             var e = Container.Create("e", 100);
 
             // Act
-            a.AddWater(10); // a:10, b:0, c:0, d:0, e:0
+            a.SetWater(10); // a:10, b:0, c:0, d:0, e:0
             AssertAmount(10, 0, 0, 0, 0);
 
-            b.AddWater(20); // a:10, b:20, c:0, d:0, e:0
+            b.SetWater(20); // a:10, b:20, c:0, d:0, e:0
             AssertAmount(10, 20, 0, 0, 0);
 
-            c.AddWater(30); // a:10, b:20, c:30, d:0, e:0
+            c.SetWater(30); // a:10, b:20, c:30, d:0, e:0
             AssertAmount(10, 20, 30, 0, 0);
 
-            a.ConnectTo(b); // a:15, b:15, c:30, d:0, e:0
+            a.ConnectTo(b.Id); // a:15, b:15, c:30, d:0, e:0
             AssertAmount(15, 15, 30, 0, 0);
 
-            b.ConnectTo(c); // a:20, b:20, c:20, d:0, e:0
+            b.ConnectTo(c.Id); // a:20, b:20, c:20, d:0, e:0
             AssertAmount(20, 20, 20, 0, 0);
 
-            d.AddWater(40); // a:20, b:20, c:20, d:40, e:0
+            d.SetWater(40); // a:20, b:20, c:20, d:40, e:0
             AssertAmount(20, 20, 20, 40, 0);
 
-            d.ConnectTo(e); // a:20, b:20, c:20, d:20, e:20
+            d.ConnectTo(e.Id); // a:20, b:20, c:20, d:20, e:20
             AssertAmount(20, 20, 20, 20, 20);
 
-            c.ConnectTo(d); // a:20, b:20, c:20, d:20, e:20
+            c.ConnectTo(d.Id); // a:20, b:20, c:20, d:20, e:20
             AssertAmount(20, 20, 20, 20, 20);
 
-            a.AddWater(5); // a:21, b:21, c:21, d:21, e:21
+            a.SetWater(5); // a:21, b:21, c:21, d:21, e:21
             AssertAmount(21, 21, 21, 21, 21);
 
-            a.AddWater(-10); // a:19, b:19, c:19, d:19, e:19
+            a.SetWater(-10); // a:19, b:19, c:19, d:19, e:19
             AssertAmount(19, 19, 19, 19, 19);
 
-            d.Disconnect(e); // a:19, b:19, c:19, d:19, e:19
+            d.Disconnect(e.Id); // a:19, b:19, c:19, d:19, e:19
             AssertAmount(19, 19, 19, 19, 19);
 
-            a.AddWater(10); // a:21.5, b:21.5, c:21.5, d:21.5, e:19
+            a.SetWater(10); // a:21.5, b:21.5, c:21.5, d:21.5, e:19
             AssertAmount(21.5, 21.5, 21.5, 21.5, 19);
 
             void AssertAmount(double aAmount, double bAmount, double cAmount, double dAmount, double eAmount)

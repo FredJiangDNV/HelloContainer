@@ -1,6 +1,7 @@
 ﻿using HelloContainer.Domain.Common;
 using HelloContainer.Domain.ContainerAggregate.Events;
 using HelloContainer.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HelloContainer.Domain.ContainerAggregate
 {
@@ -9,14 +10,22 @@ namespace HelloContainer.Domain.ContainerAggregate
         public string Name { get; private set; }
         public Amount Amount { get; private set; }
         public Capacity Capacity { get; private set; }
-        public IList<Container> ConnectedContainers { get; private set; }
+
+        public List<string> ConnectedContainerIdsRaw { get; private set; } = new();
+
+        [NotMapped]
+        public IList<Guid> ConnectedContainerIds
+        {
+            get => ConnectedContainerIdsRaw.Select(Guid.Parse).ToList();
+            set => ConnectedContainerIdsRaw = value?.Select(g => g.ToString()).ToList() ?? new();
+        }
 
         private Container(string name, Capacity capacity) : base(Guid.NewGuid())
         {
             Name = name;
             Capacity = capacity;
             Amount = Amount.Create(0);
-            ConnectedContainers = new List<Container>();
+            ConnectedContainerIds = new List<Guid>();
         }
 
         public static Container Create(string name, double capacity)
@@ -26,68 +35,38 @@ namespace HelloContainer.Domain.ContainerAggregate
             return container;
         }
 
-        public void ConnectTo(Container other)
+        public void ConnectTo(Guid otherContainerId)
         {
-            if (other == null)
-                throw new InvalidConnectionException("Container cannot be null.");
+            if (otherContainerId == Guid.Empty)
+                throw new InvalidConnectionException("Container ID cannot be empty.");
 
-            if (other.Id == Id)
-                throw new InvalidConnectionException(Id, other.Id, "Cannot connect a container to itself.");
+            if (otherContainerId == Id)
+                throw new InvalidConnectionException(Id, otherContainerId, "Cannot connect a container to itself.");
 
-            if (ConnectedContainers.Contains(other))
-                throw new InvalidConnectionException(Id, other.Id, "Container is already connected.");
+            if (ConnectedContainerIds.Contains(otherContainerId))
+                throw new InvalidConnectionException(Id, otherContainerId, "Container is already connected.");
 
-            ConnectedContainers.Add(other);
-            other.ConnectedContainers.Add(this);
-
-            var all = GetAllConnectedContainers();
-            double total = all.Sum(c => c.Amount.Value);
-            double avg = total / all.Count;
-            foreach (var c in all)
-                c.Amount = Amount.Create(avg);
+            var containers = ConnectedContainerIds.ToList();
+            containers.Add(otherContainerId);
+            ConnectedContainerIds = containers;
         }
 
-        public void AddWater(double amount)
+        public void SetWater(double amount)
         {
-            var all = GetAllConnectedContainers();
-            double total = all.Sum(c => c.Amount.Value) + amount;
-            double avg = total / all.Count;
-            foreach (var c in all)
-                c.Amount = Amount.Create(avg);
+            Amount = Amount.Create(amount);
         }
 
-        private List<Container> GetAllConnectedContainers()
+        public void Disconnect(Guid otherContainerId)
         {
-            var visited = new HashSet<Container>();
-            var queue = new Queue<Container>();
-            queue.Enqueue(this);
-            visited.Add(this);
+            if (otherContainerId == Guid.Empty)
+                throw new InvalidConnectionException("Container ID cannot be empty.");
 
-            while (queue.Count > 0)
-            {
-                var current = queue.Dequeue();
-                foreach (var next in current.ConnectedContainers)
-                {
-                    if (!visited.Contains(next))
-                    {
-                        visited.Add(next);
-                        queue.Enqueue(next);
-                    }
-                }
-            }
-            return visited.ToList();
-        }
+            if (!ConnectedContainerIds.Contains(otherContainerId))
+                throw new InvalidConnectionException(Id, otherContainerId, "Container is not connected.");
 
-        public void Disconnect(Container other)
-        {
-            if (other == null)
-                throw new InvalidConnectionException("Container cannot be null.");
-
-            if (!ConnectedContainers.Contains(other))
-                throw new InvalidConnectionException(Id, other.Id, "Container is not connected.");
-
-            ConnectedContainers.Remove(other);
-            other.ConnectedContainers.Remove(this);
+            var containers = ConnectedContainerIds.ToList();
+            containers.Remove(otherContainerId);
+            ConnectedContainerIds = containers;
         }
     }
 }

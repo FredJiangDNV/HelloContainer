@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\HelloContainer.Domain\HelloContainer.Domain.csproj" />
+	  <ProjectReference Include="..\HelloContainer.Application\HelloContainer.Application.csproj" />
 	</ItemGroup>
 
 </Project>
