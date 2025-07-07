@@ -62,6 +62,10 @@
 * 数据库查询root，其他对象遍历关联
 
 #### Factory
+什么情况下使用Factory
+* 创建Object的逻辑复杂，简化创建代码
+* 创建Object有异步逻辑
+* 创建Object的时候想返回错误或者Object，使用Result Pattern
 
 ### Event
 
