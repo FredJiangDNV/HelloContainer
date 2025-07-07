@@ -1,5 +1,4 @@
 ﻿using HelloContainer.Application.Mappings;
-using HelloContainer.Application.Services;
 using HelloContainer.Infrastructure.Repositories;
 using HelloContainer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.Services;
+using HelloContainer.Application;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -37,7 +37,7 @@ namespace HelloContainer.Api.Extensions
 
             // Add Services
             services.AddScoped<IContainerRepository, ContainerRepository>();
-            services.AddScoped<IContainerService, ContainerService>();
+            services.AddScoped<ContainerService>();
             services.AddScoped<IContainerManager, ContainerManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

@@ -1,5 +1,5 @@
-﻿using HelloContainer.Application.DTOs;
-using HelloContainer.Application.Services;
+﻿using HelloContainer.Application;
+using HelloContainer.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloContainer.Api.Controllers
@@ -8,9 +8,9 @@ namespace HelloContainer.Api.Controllers
     [Route("api/[controller]s")]
     public class ContainerController : ControllerBase
     {
-        private readonly IContainerService _containerService;
+        private readonly ContainerService _containerService;
 
-        public ContainerController(IContainerService containerService)
+        public ContainerController(ContainerService containerService)
         {
             _containerService = containerService;
         }

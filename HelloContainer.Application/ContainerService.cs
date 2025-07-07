@@ -4,9 +4,9 @@ using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.ContainerAggregate;
 using HelloContainer.Domain.Services;
 
-namespace HelloContainer.Application.Services
+namespace HelloContainer.Application
 {
-    public class ContainerService : IContainerService
+    public class ContainerService
     {
         private readonly IContainerRepository _containerRepository;
         private readonly IMapper _mapper;
@@ -66,4 +66,4 @@ namespace HelloContainer.Application.Services
             return _mapper.Map<ContainerReadDto>(sourceContainer);
         }
     }
-} 
+}
