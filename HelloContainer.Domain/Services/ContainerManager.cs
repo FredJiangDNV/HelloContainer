@@ -32,10 +32,21 @@ namespace HelloContainer.Domain.Services
             return sourceContainer;
         }
 
-        private async Task SetWaterForAllConnectedContainers(Guid containerId, double amount = 0)
+        public async Task<Container> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId)
+        {
+            var sourceContainer = await GetContainerOrThrow(sourceContainerId);
+            var targetContainer = await GetContainerOrThrow(targetContainerId);
+
+            sourceContainer!.Disconnect(targetContainerId);
+            targetContainer!.Disconnect(sourceContainerId);
+
+            return sourceContainer;
+        }
+
+        private async Task SetWaterForAllConnectedContainers(Guid containerId, double addedAmount = 0)
         {
             var allConnectedContainers = await GetAllConnectedContainers(containerId);
-            double total = allConnectedContainers.Sum(c => c.Amount.Value) + amount;
+            double total = allConnectedContainers.Sum(c => c.Amount.Value) + addedAmount;
             double avg = total / allConnectedContainers.Count;
 
             foreach (var c in allConnectedContainers)
@@ -47,17 +58,6 @@ namespace HelloContainer.Domain.Services
             var sourceContainer = await _repository.GetById(sourceContainerId);
             if (sourceContainer == null)
                 throw new ContainerNotFoundException(sourceContainerId);
-            return sourceContainer;
-        }
-
-        public async Task<Container> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId)
-        {
-            var sourceContainer = await GetContainerOrThrow(sourceContainerId);
-            var targetContainer = await GetContainerOrThrow(targetContainerId);
-
-            sourceContainer!.Disconnect(targetContainerId);
-            targetContainer!.Disconnect(sourceContainerId);
-
             return sourceContainer;
         }
 
