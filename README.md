@@ -62,14 +62,22 @@
 * 数据库查询root，其他对象遍历关联
 
 #### Factory
+什么情况下使用Factory
+* 创建Object的逻辑复杂，简化创建代码
+* 创建Object有异步逻辑
+* 创建Object的时候想返回错误或者Object，使用Result Pattern
+
+#### Repositories
 
 ### Event
 
 #### DomainEvent
-作用范围是领域内，解耦Domain和IntegrationEvent，把IntegrationEvent移到Domain外
+* Eventual Consistency
+* 作用范围是领域内，解耦Domain和IntegrationEvent，把IntegrationEvent移到Domain外
+* Update other Aggregates with domain event
 
 #### IntegrationEvent
-与系统中其他或外部组件交互
+* 作用范围是领域外，与系统中其他或外部组件交互
 
 ## 项目结构 
 HelloContainer/  
