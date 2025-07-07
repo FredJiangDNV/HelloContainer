@@ -3,7 +3,6 @@ using HelloContainer.Application.Services;
 using HelloContainer.Infrastructure.Repositories;
 using HelloContainer.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using HelloContainer.Infrastructure.Common;
 using HelloContainer.Application.EventHandlers;
 using HelloContainer.Application.Validators;
 using FluentValidation;

@@ -1,8 +1,7 @@
-namespace HelloContainer.Infrastructure.Common
+namespace HelloContainer.Domain.Abstractions
 {
     public interface IUnitOfWork
     {
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-        HelloContainerDbContext DbContext { get; }
     }
 }

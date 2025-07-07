@@ -15,10 +15,7 @@ namespace HelloContainer.Domain.Services
 
         public async Task<Container?> AddWater(Guid containerId, double amount)
         {
-            var container = await _repository.GetById(containerId);
-            if (container == null)
-                throw new ContainerNotFoundException(containerId);
-
+            var container = await GetContainerOrThrow(containerId);
             await SetWaterForAllConnectedContainers(containerId, amount);
             return container;
         }

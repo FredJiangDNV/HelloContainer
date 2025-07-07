@@ -1,4 +1,6 @@
-namespace HelloContainer.Infrastructure.Common
+using HelloContainer.Domain.Abstractions;
+
+namespace HelloContainer.Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {

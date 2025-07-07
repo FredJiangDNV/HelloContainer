@@ -1,7 +1,7 @@
 using HelloContainer.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace HelloContainer.Infrastructure.Common
+namespace HelloContainer.Infrastructure
 {
     public class Repository<T> : IRepository<T> where T : class
     {
