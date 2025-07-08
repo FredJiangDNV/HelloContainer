@@ -40,6 +40,7 @@ namespace HelloContainer.Api.Extensions
             services.AddScoped<ContainerService>();
             services.AddScoped<IContainerManager, ContainerManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IContainerFactory, ContainerFactory>();
 
             return services;
         }

@@ -1,7 +1,6 @@
 using AutoMapper;
 using HelloContainer.Application.DTOs;
 using HelloContainer.Domain.Abstractions;
-using HelloContainer.Domain.ContainerAggregate;
 using HelloContainer.Domain.Services;
 
 namespace HelloContainer.Application
@@ -12,21 +11,20 @@ namespace HelloContainer.Application
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IContainerManager _containerManager;
+        private readonly IContainerFactory _containerFactory;
 
-        public ContainerService(IContainerRepository containerRepository, IMapper mapper, IUnitOfWork unitOfWork, IContainerManager containerManager)
+        public ContainerService(IContainerRepository containerRepository, IMapper mapper, IUnitOfWork unitOfWork, IContainerManager containerManager, IContainerFactory containerFactory)
         {
             _containerRepository = containerRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _containerManager = containerManager;
+            _containerFactory = containerFactory;
         }
 
         public async Task<ContainerReadDto> CreateContainer(CreateContainerDto createDto)
         {
-            var container = Container.Create(createDto.Name, createDto.Capacity);
-
-            _containerRepository.Add(container);
-
+            var container = await _containerFactory.CreateContainer(createDto.Name, createDto.Capacity);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ContainerReadDto>(container);
         }
