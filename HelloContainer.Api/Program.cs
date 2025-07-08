@@ -1,4 +1,4 @@
-using HelloContainer.Api.Extensions;
+﻿using HelloContainer.Api.Extensions;
 using HelloContainer.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +9,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddServices(configuration, builder.Environment);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -27,6 +39,8 @@ app.UseDomainExceptionHandler();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
 

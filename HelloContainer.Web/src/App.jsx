@@ -81,7 +81,7 @@ function App() {
     setError('');
     const amount = Number(amountInputs[id]) || 1;
     try {
-      const res = await fetch(`/api/containers/${id}/add-water`, {
+      const res = await fetch(`/api/containers/${id}/water`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount })
@@ -148,7 +148,7 @@ function App() {
         <table border="1" cellPadding="8" style={{ width: '100%', textAlign: 'center' }}>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Name</th>
               <th>容量</th>
               <th>当前水量</th>
               <th>操作</th>
@@ -157,7 +157,7 @@ function App() {
           <tbody>
             {containers.map(c => (
               <tr key={c.id}>
-                <td>{c.id}</td>
+                <td>{c.name}</td>
                 <td>{c.capacity}</td>
                 <td>{c.amount}</td>
                 <td>
