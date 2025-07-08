@@ -1,6 +1,71 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
+function ContainerGraph({ containers }) {
+  const width = 160 * containers.length + 60;
+  const height = 220;
+  const containerWidth = 60;
+  const containerHeight = 100;
+  const marginX = 100;
+  const marginY = 50;
+
+  const positions = containers.map((c, i) => ({
+    id: c.id,
+    x: marginX + i * 130,
+    y: marginY
+  }));
+
+  const getPos = id => positions.find(p => p.id === id);
+
+  return (
+    <svg width={width} height={height} style={{ background: '#f8f8f8', borderRadius: 12, marginBottom: 32 }}>
+      {containers.map((c, i) => (
+        c.connectedContainerIds?.map(cid => {
+          const from = getPos(c.id);
+          const to = getPos(cid);
+          if (!to || c.id > cid) return null;
+          return (
+            <line
+              key={c.id + '-' + cid}
+              x1={from.x + containerWidth}
+              y1={from.y + containerHeight / 2}
+              x2={to.x}
+              y2={to.y + containerHeight / 2}
+              stroke="#222"
+              strokeWidth={2}
+            />
+          );
+        })
+      ))}
+      {containers.map((c, i) => {
+        const pos = getPos(c.id);
+        const waterHeight = containerHeight * (c.amount / c.capacity);
+        const isFull = c.amount >= c.capacity;
+        const showWater = c.amount > 0;
+        return (
+          <g key={c.id}>
+            <text x={pos.x + containerWidth / 2} y={pos.y - 10} textAnchor="middle" fontSize={14} fill="#666">Capacity: {c.capacity}</text>
+            <rect x={pos.x} y={pos.y} width={containerWidth} height={containerHeight} rx={15} fill="#fff" stroke="#222" strokeWidth={2} />
+            {showWater && (
+              <rect
+                x={pos.x}
+                y={pos.y + containerHeight - waterHeight}
+                width={containerWidth}
+                height={waterHeight}
+                fill="#90caf9"
+                rx={isFull ? 15 : 0}
+                ry={isFull ? 15 : 0}
+              />
+            )}
+            <text x={pos.x + containerWidth / 2} y={pos.y + containerHeight / 2 + 6} textAnchor="middle" fontSize={18} fill="#222">{c.amount}</text>
+            <text x={pos.x + containerWidth / 2} y={pos.y + containerHeight + 24} textAnchor="middle" fontSize={16}>{c.name}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 function App() {
   const [containers, setContainers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -98,6 +163,7 @@ function App() {
   return (
     <div className="container-app">
       <h1>Container Management</h1>
+      <ContainerGraph containers={containers} />
       {toast.message && (
         <div style={{
           position: 'fixed',
