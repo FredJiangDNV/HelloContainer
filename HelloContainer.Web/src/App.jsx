@@ -9,14 +9,14 @@ function App() {
   const [newContainerCapacity, setNewContainerCapacity] = useState(10);
   const [amountInputs, setAmountInputs] = useState({});
   const [toast, setToast] = useState({ message: '', type: '' }); // type: 'success' | 'error'
+  const [newContainerName, setNewContainerName] = useState("");
 
-  // 拉取容器列表
   const fetchContainers = async () => {
     setLoading(true);
     setError('');
     try {
       const res = await fetch('/api/containers');
-      if (!res.ok) throw new Error('获取容器失败');
+      if (!res.ok) throw new Error('Failed to fetch containers');
       const data = await res.json();
       setContainers(data);
     } catch (e) {
@@ -30,7 +30,6 @@ function App() {
     fetchContainers();
   }, []);
 
-  // Toast 显示和自动消失
   useEffect(() => {
     if (toast.message) {
       const timer = setTimeout(() => setToast({ message: '', type: '' }), 2500);
@@ -38,32 +37,35 @@ function App() {
     }
   }, [toast]);
 
-  // 添加容器
   const handleAddContainer = async () => {
-    setError('');
+    setError("");
+    if (!newContainerName.trim()) {
+      setToast({ message: "Name is required", type: "error" });
+      return;
+    }
     try {
-      const res = await fetch('/api/containers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: "A", capacity: newContainerCapacity })
+      const res = await fetch("/api/containers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newContainerName, capacity: newContainerCapacity })
       });
-      if (!res.ok) throw new Error('添加容器失败');
-      setToast({ message: '添加成功', type: 'success' });
+      if (!res.ok) throw new Error("Failed to add container");
+      setToast({ message: "Added successfully", type: "success" });
+      setNewContainerName("");
       await fetchContainers();
     } catch (e) {
       setError(e.message);
-      setToast({ message: e.message, type: 'error' });
+      setToast({ message: e.message, type: "error" });
     }
   };
 
-  // 删除容器
   const handleDelete = async (id) => {
-    if (!window.confirm('确定要删除该容器吗？')) return;
+    if (!window.confirm('Are you sure you want to delete this container?')) return;
     setError('');
     try {
       const res = await fetch(`/api/containers/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('删除容器失败');
-      setToast({ message: '删除成功', type: 'success' });
+      if (!res.ok) throw new Error('Delete failed');
+      setToast({ message: 'Deleted successfully', type: 'success' });
       await fetchContainers();
     } catch (e) {
       setError(e.message);
@@ -71,12 +73,10 @@ function App() {
     }
   };
 
-  // 加水/减水输入框变化
   const handleAmountInputChange = (id, value) => {
     setAmountInputs(inputs => ({ ...inputs, [id]: value }));
   };
 
-  // 加水/减水
   const handleAddWater = async (id) => {
     setError('');
     const amount = Number(amountInputs[id]) || 1;
@@ -86,26 +86,8 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount })
       });
-      if (!res.ok) throw new Error('加水失败');
-      setToast({ message: '加水成功', type: 'success' });
-      await fetchContainers();
-    } catch (e) {
-      setError(e.message);
-      setToast({ message: e.message, type: 'error' });
-    }
-  };
-
-  const handleRemoveWater = async (id) => {
-    setError('');
-    const amount = Number(amountInputs[id]) || 1;
-    try {
-      const res = await fetch(`/api/containers/${id}/remove-water`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
-      });
-      if (!res.ok) throw new Error('减水失败');
-      setToast({ message: '减水成功', type: 'success' });
+      if (!res.ok) throw new Error('Add water failed');
+      setToast({ message: 'Water added', type: 'success' });
       await fetchContainers();
     } catch (e) {
       setError(e.message);
@@ -115,7 +97,7 @@ function App() {
 
   return (
     <div className="container-app">
-      <h1>容器管理</h1>
+      <h1>Container Management</h1>
       {toast.message && (
         <div style={{
           position: 'fixed',
@@ -134,29 +116,38 @@ function App() {
       {error && <div style={{ color: 'red' }}>{error}</div>}
       <div style={{ marginBottom: 16 }}>
         <input
+          type="text"
+          placeholder="Name"
+          value={newContainerName}
+          onChange={e => setNewContainerName(e.target.value)}
+          style={{ width: 120, marginRight: 8 }}
+        />
+        <input
           type="number"
           min={1}
           value={newContainerCapacity}
           onChange={e => setNewContainerCapacity(Number(e.target.value))}
           style={{ width: 80 }}
         />
-        <button onClick={handleAddContainer} style={{ marginLeft: 8 }}>添加容器</button>
+        <button onClick={handleAddContainer} style={{ marginLeft: 8 }}>Add Container</button>
       </div>
       {loading ? (
-        <div>加载中...</div>
+        <div>Loading...</div>
       ) : (
         <table border="1" cellPadding="8" style={{ width: '100%', textAlign: 'center' }}>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>容量</th>
-              <th>当前水量</th>
-              <th>操作</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Capacity</th>
+                <th>Amount</th>
+                <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {containers.map(c => (
               <tr key={c.id}>
+                <td>{c.id}</td>
                 <td>{c.name}</td>
                 <td>{c.capacity}</td>
                 <td>{c.amount}</td>
@@ -168,9 +159,8 @@ function App() {
                     style={{ width: 60 }}
                     onChange={e => handleAmountInputChange(c.id, e.target.value)}
                   />
-                  <button onClick={() => handleAddWater(c.id)} style={{ marginLeft: 4 }}>加水</button>
-                  <button onClick={() => handleRemoveWater(c.id)} style={{ marginLeft: 4 }}>减水</button>
-                  <button onClick={() => handleDelete(c.id)} style={{ marginLeft: 8, color: 'red' }}>删除</button>
+                  <button onClick={() => handleAddWater(c.id)} style={{ marginLeft: 4 }}>Add Water</button>
+                  <button onClick={() => handleDelete(c.id)} style={{ marginLeft: 8, color: 'red' }}>Delete</button>
                 </td>
               </tr>
             ))}
