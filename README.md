@@ -100,3 +100,18 @@ HelloContainer/
 #### Application Services vs Domain Services
 Domain logic is everything that is related to **business decisions**. Domain services, therefore, participate in the decision - making process the same way entities and value objects do. And application services **orchestrate those decisions** the same way they orchestrate decisions made by entities and value objects.
 
+#### Transactional Consistency vs Eventual Consistency
+##### Transactional Consistency
+* Process as a whole, nothing success or all success
+* Decrease performance
+##### Eventual Consistency
+* Inconsistency state exist
+* Quick response, no wait
+* Error handling, retry
+* Use domain event
+
+#### Rich vs. Anemic Domain Models
+ * Anemic，属性public，没有方法，外部控制业务逻辑
+ * Rich， 属性private，业务内部控制，外部调用暴露方法
+
+#### Always Valid vs. Not Always Valid
