@@ -95,3 +95,8 @@ HelloContainer/
 * 《.NET单元测试的艺术》
 * 《领域驱动设计-软件核心复杂性能应对之道》
 *  eShop(https://github.com/dotnet/eShop)
+
+## Q&A
+#### Application Services vs Domain Services
+Domain logic is everything that is related to **business decisions**. Domain services, therefore, participate in the decision - making process the same way entities and value objects do. And application services **orchestrate those decisions** the same way they orchestrate decisions made by entities and value objects.
+
