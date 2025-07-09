@@ -88,10 +88,29 @@ HelloContainer/
 └── HelloContainer.UnitTests
 ![image](https://github.com/user-attachments/assets/62c0fcdf-1367-4d04-9c47-0a560c07bcd4)
 
-
 ## 参考资料
 * 《你真的会写代码吗》
 * 《代码整洁之道》
 * 《.NET单元测试的艺术》
 * 《领域驱动设计-软件核心复杂性能应对之道》
 *  eShop(https://github.com/dotnet/eShop)
+
+## Q&A
+#### Application Services vs Domain Services
+Domain logic is everything that is related to **business decisions**. Domain services, therefore, participate in the decision - making process the same way entities and value objects do. And application services **orchestrate those decisions** the same way they orchestrate decisions made by entities and value objects.
+
+#### Transactional Consistency vs Eventual Consistency
+##### Transactional Consistency
+* Process as a whole, nothing success or all success
+* Decrease performance
+##### Eventual Consistency
+* Inconsistency state exist
+* Quick response, no wait
+* Error handling, retry
+* Use domain event
+
+#### Rich vs. Anemic Domain Models
+ * Anemic，属性public，没有方法，外部控制业务逻辑
+ * Rich， 属性private，业务内部控制，外部调用暴露方法
+
+#### Always Valid vs. Not Always Valid
