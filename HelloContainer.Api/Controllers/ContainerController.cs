@@ -36,6 +36,12 @@ namespace HelloContainer.Api.Controllers
             return Ok(container);
         }
 
+        [HttpDelete("{id}")]
+        public async Task DeleteContainer(Guid id)
+        {
+            await _containerService.DeleteContainer(id);
+        }
+
         [HttpPost("{id}/water")]
         public async Task<ActionResult<ContainerReadDto>> AddWater(Guid id, [FromBody] AddWaterDto addWaterDto)
         {

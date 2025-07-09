@@ -63,5 +63,24 @@ namespace HelloContainer.Application
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ContainerReadDto>(sourceContainer);
         }
+
+        public async Task DeleteContainer(Guid id)
+        {
+            var container = await _containerRepository.GetById(id);
+            if (container != null)
+            {
+                foreach (var connectedId in container.ConnectedContainerIds.ToList())
+                {
+                    var connectedContainer = await _containerRepository.GetById(connectedId);
+                    if (connectedContainer != null)
+                    {
+                        connectedContainer.Disconnect(id);
+                        _containerRepository.Update(connectedContainer);
+                    }
+                }
+                _containerRepository.Delete(container);
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
     }
 }
