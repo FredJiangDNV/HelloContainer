@@ -55,5 +55,12 @@ namespace HelloContainer.Api.Controllers
             var container = await _containerService.ConnectContainers(connectDto.SourceContainerId, connectDto.TargetContainerId);
             return Ok(container);
         }
+
+        [HttpPost("disconnections")]
+        public async Task<ActionResult<ContainerReadDto>> DisConnectContainers([FromBody] DisconnectContainersDto connectDto)
+        {
+            var container = await _containerService.DisconnectContainers(connectDto.SourceContainerId, connectDto.TargetContainerId);
+            return Ok(container);
+        }
     }
 }

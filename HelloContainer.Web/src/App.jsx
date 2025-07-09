@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-function ContainerGraph({ containers }) {
+function ContainerGraph({ containers, handleConnect, handleDelete, handleAddWater }) {
   const width = 160 * containers.length + 60;
   const height = 220;
   const containerWidth = 60;
@@ -17,6 +17,21 @@ function ContainerGraph({ containers }) {
 
   const getPos = id => positions.find(p => p.id === id);
 
+  const handleDisconnect = async (id1, id2) => {
+    if (!window.confirm('Are you sure you want to disconnect these two containers?')) return;
+    try {
+      const res = await fetch(`/api/containers/disconnections`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceContainerId: id1, targetContainerId: id2 })
+      });
+      if (!res.ok) throw new Error('Disconnect failed');
+      window.location.reload();
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
   return (
     <svg width={width} height={height} style={{ background: '#f8f8f8', borderRadius: 12, marginBottom: 32 }}>
       {containers.map((c, i) => (
@@ -24,16 +39,28 @@ function ContainerGraph({ containers }) {
           const from = getPos(c.id);
           const to = getPos(cid);
           if (!to || c.id > cid) return null;
+          const mx = (from.x + containerWidth + to.x) / 2;
+          const my = (from.y + containerHeight / 2 + to.y + containerHeight / 2) / 2;
           return (
-            <line
-              key={c.id + '-' + cid}
-              x1={from.x + containerWidth}
-              y1={from.y + containerHeight / 2}
-              x2={to.x}
-              y2={to.y + containerHeight / 2}
-              stroke="#222"
-              strokeWidth={2}
-            />
+            <g key={c.id + '-' + cid}>
+              <line
+                x1={from.x + containerWidth}
+                y1={from.y + containerHeight / 2}
+                x2={to.x}
+                y2={to.y + containerHeight / 2}
+                stroke="#222"
+                strokeWidth={2}
+              />
+              <g
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleDisconnect(c.id, cid)}
+                transform={`translate(${mx - 10}, ${my - 10})`}
+              >
+                <rect width={20} height={20} rx={6} fill="#fff" stroke="#f44336" strokeWidth={1.5} />
+                <line x1={5} y1={5} x2={15} y2={15} stroke="#f44336" strokeWidth={2} />
+                <line x1={15} y1={5} x2={5} y2={15} stroke="#f44336" strokeWidth={2} />
+              </g>
+            </g>
           );
         })
       ))}
@@ -59,6 +86,52 @@ function ContainerGraph({ containers }) {
             )}
             <text x={pos.x + containerWidth / 2} y={pos.y + containerHeight / 2 + 6} textAnchor="middle" fontSize={18} fill="#222">{c.amount}</text>
             <text x={pos.x + containerWidth / 2} y={pos.y + containerHeight + 24} textAnchor="middle" fontSize={16}>{c.name}</text>
+            {(() => {
+              const buttonSize = 24;
+              const buttonGap = 12;
+              const buttonY = pos.y + containerHeight + 36;
+              const buttonStartX = pos.x + containerWidth / 2 - (buttonSize * 1.5 + buttonGap);
+              return (
+                <g>
+                  <g
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleAddWater(c.id)}
+                    transform={`translate(${buttonStartX}, ${buttonY})`}
+                    onMouseEnter={e => e.currentTarget.querySelector('rect').setAttribute('fill', '#bbdefb')}
+                    onMouseLeave={e => e.currentTarget.querySelector('rect').setAttribute('fill', '#e3f2fd')}
+                  >
+                    <rect width={buttonSize} height={buttonSize} rx={12} fill="#e3f2fd" />
+                    <line x1="12" y1="6" x2="12" y2="18" stroke="#1976d2" strokeWidth="2" />
+                    <line x1="6" y1="12" x2="18" y2="12" stroke="#1976d2" strokeWidth="2" />
+                  </g>
+                  <g
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleDelete(c.id)}
+                    transform={`translate(${buttonStartX + buttonSize + buttonGap}, ${buttonY})`}
+                    onMouseEnter={e => e.currentTarget.querySelector('rect').setAttribute('fill', '#ffcdd2')}
+                    onMouseLeave={e => e.currentTarget.querySelector('rect').setAttribute('fill', '#ffebee')}
+                  >
+                    <rect width={buttonSize} height={buttonSize} rx={12} fill="#ffebee" />
+                    <rect x="8" y="12" width="8" height="7" rx="2" fill="#f44336" />
+                    <rect x="10" y="7" width="4" height="5" rx="1" fill="#f44336" />
+                    <line x1="11" y1="15" x2="13" y2="17" stroke="#fff" strokeWidth="1.2" />
+                    <line x1="13" y1="15" x2="11" y2="17" stroke="#fff" strokeWidth="1.2" />
+                  </g>
+                  <g
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleConnect && handleConnect(c.id)}
+                    transform={`translate(${buttonStartX + (buttonSize + buttonGap) * 2}, ${buttonY})`}
+                    onMouseEnter={e => e.currentTarget.querySelector('rect').setAttribute('fill', '#bbdefb')}
+                    onMouseLeave={e => e.currentTarget.querySelector('rect').setAttribute('fill', '#e3f2fd')}
+                  >
+                    <rect width={buttonSize} height={buttonSize} rx={12} fill="#e3f2fd" />
+                    <circle cx="9" cy="12" r="4" fill="#1976d2" />
+                    <circle cx="15" cy="12" r="4" fill="#1976d2" />
+                    <line x1="13" y1="12" x2="11" y2="12" stroke="#1976d2" strokeWidth="2" />
+                  </g>
+                </g>
+              );
+            })()}
           </g>
         );
       })}
@@ -70,11 +143,14 @@ function App() {
   const [containers, setContainers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [addAmount, setAddAmount] = useState(1);
   const [newContainerCapacity, setNewContainerCapacity] = useState(10);
   const [amountInputs, setAmountInputs] = useState({});
   const [toast, setToast] = useState({ message: '', type: '' }); // type: 'success' | 'error'
   const [newContainerName, setNewContainerName] = useState("");
+  const [connectSourceId, setConnectSourceId] = useState(null);
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const [addWaterTargetId, setAddWaterTargetId] = useState(null);
+  const [addWaterAmount, setAddWaterAmount] = useState(1);
 
   const fetchContainers = async () => {
     setLoading(true);
@@ -138,21 +214,45 @@ function App() {
     }
   };
 
-  const handleAmountInputChange = (id, value) => {
-    setAmountInputs(inputs => ({ ...inputs, [id]: value }));
+  const handleAddWater = (id) => {
+    setAddWaterTargetId(id);
+    setAddWaterAmount(1);
   };
 
-  const handleAddWater = async (id) => {
+  const handleConfirmAddWater = async () => {
     setError('');
-    const amount = Number(amountInputs[id]) || 1;
     try {
-      const res = await fetch(`/api/containers/${id}/water`, {
+      const res = await fetch(`/api/containers/${addWaterTargetId}/water`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount })
+        body: JSON.stringify({ amount: Number(addWaterAmount) })
       });
       if (!res.ok) throw new Error('Add water failed');
       setToast({ message: 'Water added', type: 'success' });
+      setAddWaterTargetId(null);
+      await fetchContainers();
+    } catch (e) {
+      setError(e.message);
+      setToast({ message: e.message, type: 'error' });
+    }
+  };
+
+  const handleConnect = (id) => {
+    setConnectSourceId(id);
+    setShowConnectModal(true);
+  };
+
+  const handleSelectConnectTarget = async (targetId) => {
+    setShowConnectModal(false);
+    setError('');
+    try {
+      const res = await fetch('/api/containers/connections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceContainerId: connectSourceId, targetContainerId: targetId })
+      });
+      if (!res.ok) throw new Error('Connect failed');
+      setToast({ message: 'Connected!', type: 'success' });
       await fetchContainers();
     } catch (e) {
       setError(e.message);
@@ -163,7 +263,48 @@ function App() {
   return (
     <div className="container-app">
       <h1>Container Management</h1>
-      <ContainerGraph containers={containers} />
+      <ContainerGraph containers={containers} handleConnect={handleConnect} handleDelete={handleDelete} handleAddWater={handleAddWater} />
+      {addWaterTargetId && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          background: 'rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000
+        }}>
+          <div style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 300 }}>
+            <h3>Add Water</h3>
+            <input
+              type="number"
+              min={1}
+              value={addWaterAmount}
+              onChange={e => setAddWaterAmount(e.target.value)}
+              style={{ width: 100, marginRight: 8 }}
+            />
+            <button onClick={handleConfirmAddWater} style={{ marginRight: 8 }}>Save</button>
+            <button onClick={() => setAddWaterTargetId(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+      {showConnectModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+          background: 'rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000
+        }}>
+          <div style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 300 }}>
+            <h3>Choose Container</h3>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
+              {containers
+                .filter(c => c.id !== connectSourceId && !containers.find(src => src.id === connectSourceId)?.connectedContainerIds.includes(c.id))
+                .map(c => (
+                  <li key={c.id} style={{ margin: '8px 0' }}>
+                    <button onClick={() => handleSelectConnectTarget(c.id)} style={{ width: '100%', padding: 8 }}>
+                      {c.name}
+                    </button>
+                  </li>
+                ))}
+            </ul>
+            <button onClick={() => setShowConnectModal(false)} style={{ marginTop: 12 }}>Cancel</button>
+          </div>
+        </div>
+      )}
       {toast.message && (
         <div style={{
           position: 'fixed',
@@ -199,40 +340,7 @@ function App() {
       </div>
       {loading ? (
         <div>Loading...</div>
-      ) : (
-        <table border="1" cellPadding="8" style={{ width: '100%', textAlign: 'center' }}>
-          <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Capacity</th>
-                <th>Amount</th>
-                <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {containers.map(c => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.name}</td>
-                <td>{c.capacity}</td>
-                <td>{c.amount}</td>
-                <td>
-                  <input
-                    type="number"
-                    value={amountInputs[c.id] ?? 1}
-                    min={1}
-                    style={{ width: 60 }}
-                    onChange={e => handleAmountInputChange(c.id, e.target.value)}
-                  />
-                  <button onClick={() => handleAddWater(c.id)} style={{ marginLeft: 4 }}>Add Water</button>
-                  <button onClick={() => handleDelete(c.id)} style={{ marginLeft: 8, color: 'red' }}>Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      ) : null}
     </div>
   );
 }
