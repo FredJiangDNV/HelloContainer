@@ -73,12 +73,12 @@ namespace HelloContainer.Application
                 {
                     var connectedContainer = await _containerRepository.GetById(connectedId);
                     if (connectedContainer != null)
-                    {
                         connectedContainer.Disconnect(id);
-                        _containerRepository.Update(connectedContainer);
-                    }
+
+                    container.Disconnect(connectedId);
                 }
-                _containerRepository.Delete(container);
+
+                container.Delete();
                 await _unitOfWork.SaveChangesAsync();
             }
         }

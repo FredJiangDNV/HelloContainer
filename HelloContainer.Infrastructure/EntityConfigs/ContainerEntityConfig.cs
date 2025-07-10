@@ -38,6 +38,8 @@ namespace HelloContainer.Infrastructure.EntityConfigs
              .IsRequired();
 
             builder.Ignore(t => t.DomainEvents);
+
+            builder.HasQueryFilter(c => !c.IsDeleted);
         }
     }
 }

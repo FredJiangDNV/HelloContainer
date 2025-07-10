@@ -47,7 +47,7 @@ namespace HelloContainer.Domain.Services
         {
             var allConnectedContainers = await GetAllConnectedContainers(containerId);
             double total = allConnectedContainers.Sum(c => c.Amount.Value) + addedAmount;
-            double avg = total / allConnectedContainers.Count;
+            double avg = Math.Round(total / allConnectedContainers.Count, 2);
 
             foreach (var c in allConnectedContainers)
                 c.SetWater(avg);

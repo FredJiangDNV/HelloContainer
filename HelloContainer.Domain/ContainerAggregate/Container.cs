@@ -10,8 +10,8 @@ namespace HelloContainer.Domain.ContainerAggregate
         public string Name { get; private set; }
         public Amount Amount { get; private set; }
         public Capacity Capacity { get; private set; }
-
         public List<string> ConnectedContainerIdsRaw { get; private set; } = new();
+        public bool IsDeleted { get; private set; }
 
         [NotMapped]
         public IList<Guid> ConnectedContainerIds
@@ -46,9 +46,7 @@ namespace HelloContainer.Domain.ContainerAggregate
             if (ConnectedContainerIds.Contains(otherContainerId))
                 throw new InvalidConnectionException(Id, otherContainerId, "Container is already connected.");
 
-            var containers = ConnectedContainerIds.ToList();
-            containers.Add(otherContainerId);
-            ConnectedContainerIds = containers;
+            ConnectedContainerIdsRaw.Add(otherContainerId.ToString());
         }
 
         public void SetWater(double amount)
@@ -64,9 +62,12 @@ namespace HelloContainer.Domain.ContainerAggregate
             if (!ConnectedContainerIds.Contains(otherContainerId))
                 throw new InvalidConnectionException(Id, otherContainerId, "Container is not connected.");
 
-            var containers = ConnectedContainerIds.ToList();
-            containers.Remove(otherContainerId);
-            ConnectedContainerIds = containers;
+            ConnectedContainerIdsRaw.Remove(otherContainerId.ToString());
+        }
+
+        public void Delete()
+        {
+            IsDeleted = true;
         }
     }
 }
