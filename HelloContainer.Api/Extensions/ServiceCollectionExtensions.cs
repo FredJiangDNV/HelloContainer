@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.Services;
 using HelloContainer.Application;
+using MassTransit;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -20,6 +21,15 @@ namespace HelloContainer.Api.Extensions
             {
                 x.Lifetime = ServiceLifetime.Scoped;
                 x.RegisterServicesFromAssemblyContaining<ContainerCreatedDomainEventHandler>();
+            });
+
+            services.AddMassTransit(c =>
+            {
+                c.AddConsumer<ContainerCreatedConsumer>();
+                c.UsingInMemory((context, cfg) =>
+                {
+                    cfg.ConfigureEndpoints(context);
+                });
             });
 
             services.AddAutoMapper(typeof(ContainerMappingProfile));

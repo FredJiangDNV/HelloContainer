@@ -31,7 +31,7 @@ namespace HelloContainer.Domain.ContainerAggregate
         public static Container Create(string name, double capacity)
         {
             var container = new Container(name, Capacity.Create(capacity));
-            container.Raise(new ContainerCreatedDomainEvent(Guid.NewGuid(), container.Id));
+            container.Raise(new ContainerCreatedDomainEvent(Guid.NewGuid(), container.Id, name));
             return container;
         }
 

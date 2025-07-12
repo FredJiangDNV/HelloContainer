@@ -2,5 +2,5 @@
 
 namespace HelloContainer.Domain.ContainerAggregate.Events
 {
-    public record ContainerCreatedDomainEvent(Guid id, Guid containerId) : DomainEvent(id);
+    public record ContainerCreatedDomainEvent(Guid id, Guid containerId, string name) : DomainEvent(id);
 }

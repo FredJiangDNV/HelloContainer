@@ -1,14 +1,16 @@
-﻿using HelloContainer.Domain.ContainerAggregate.Events;
+﻿using HelloContainer.Common.IntegrationEvents;
+using HelloContainer.Domain.ContainerAggregate.Events;
+using MassTransit;
 using MediatR;
 
 namespace HelloContainer.Application.EventHandlers
 {
-    public class ContainerCreatedDomainEventHandler : INotificationHandler<ContainerCreatedDomainEvent>
+    public class ContainerCreatedDomainEventHandler(IBus bus) : INotificationHandler<ContainerCreatedDomainEvent>
     {
-        public Task Handle(ContainerCreatedDomainEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken cancellationToken)
         {
-            Console.WriteLine($"Container created with ID: {notification.containerId}");
-            return Task.CompletedTask;
+            var ie = new ContainerCreatedIntegrationEvent(@event.id, @event.containerId, @event.name);
+            await bus.Publish(ie, cancellationToken);
         }
     }
 }

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HelloContainer.Common\HelloContainer.Common.csproj" />
     <ProjectReference Include="..\HelloContainer.Domain\HelloContainer.Domain.csproj" />
     <ProjectReference Include="..\HelloContainer.Infrastructure\HelloContainer.Infrastructure.csproj" />
   </ItemGroup>
@@ -16,6 +17,7 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="MassTransit" Version="8.5.0" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
   </ItemGroup>
