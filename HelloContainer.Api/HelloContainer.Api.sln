@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloContainer.Infrastructu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloContainer.IntegrationTests", "..\HelloContainer.IntegrationTests\HelloContainer.IntegrationTests.csproj", "{1F4BC581-DC1E-46D2-A336-67E7C3D9B3CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloContainer.Common", "..\HelloContainer.Common\HelloContainer.Common.csproj", "{F93E3341-63AF-494D-B93A-9D3782DD3FE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloContainer.Common", "..\HelloContainer.Common\HelloContainer.Common.csproj", "{F93E3341-63AF-494D-B93A-9D3782DD3FE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloContainer.Function", "..\HelloContainer.Function\HelloContainer.Function.csproj", "{F8E87D30-7DD3-403E-8047-9EF69E427938}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{F93E3341-63AF-494D-B93A-9D3782DD3FE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F93E3341-63AF-494D-B93A-9D3782DD3FE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F93E3341-63AF-494D-B93A-9D3782DD3FE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8E87D30-7DD3-403E-8047-9EF69E427938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8E87D30-7DD3-403E-8047-9EF69E427938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8E87D30-7DD3-403E-8047-9EF69E427938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8E87D30-7DD3-403E-8047-9EF69E427938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

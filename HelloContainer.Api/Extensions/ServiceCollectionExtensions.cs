@@ -25,7 +25,6 @@ namespace HelloContainer.Api.Extensions
 
             services.AddMassTransit(c =>
             {
-                c.AddConsumer<ContainerCreatedConsumer>();
                 c.UsingInMemory((context, cfg) =>
                 {
                     cfg.ConfigureEndpoints(context);

@@ -2,9 +2,9 @@
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace HelloContainer.Application.EventHandlers
+namespace HelloContainer.Function.Consumers
 {
-    public class ContainerCreatedConsumer(ILogger<ContainerCreatedConsumer> logger) : 
+    public class ContainerCreatedConsumer(ILogger<ContainerCreatedConsumer> logger) :
         IConsumer<ContainerCreatedIntegrationEvent>
     {
         public Task Consume(ConsumeContext<ContainerCreatedIntegrationEvent> context)
