@@ -1,6 +1,7 @@
 using HelloContainer.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HelloContainer.Api.Middleware
 {
@@ -61,10 +62,15 @@ namespace HelloContainer.Api.Middleware
                     break;
 
                 default:
+                    if (context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+                    {
+                        throw exception;
+                    }
+                    
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResponse.Message = "An unexpected error occurred.";
                     errorResponse.ErrorType = "InternalServerError";
-                    _logger.LogError(exception, "An unhandled exception occurred");
+                    _logger.LogError(exception, "An unhandled exception occurred: {Message}", exception.Message);
                     break;
             }
 

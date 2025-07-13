@@ -22,13 +22,13 @@ builder.Services.AddDbContext<LedgerDbContext>(options =>
         databaseName: "HelloContainerDB"
     ));
 
-
 // Configure MassTransit with RabbitMQ
 builder.Services.AddMassTransit(c =>
 {
     c.SetKebabCaseEndpointNameFormatter();
 
     c.AddConsumer<ContainerCreatedConsumer>();
+    c.AddConsumer<ContainerDeletedConsumer>();
 
     c.UsingRabbitMq((context, cfg) =>
     {

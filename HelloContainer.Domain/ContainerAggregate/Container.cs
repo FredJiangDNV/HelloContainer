@@ -68,6 +68,7 @@ namespace HelloContainer.Domain.ContainerAggregate
         public void Delete()
         {
             IsDeleted = true;
+            this.Raise(new ContainerDeletedDomainEvent(Guid.NewGuid(), Id, Name));
         }
     }
 }
