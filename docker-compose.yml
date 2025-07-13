@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: hello-container-rabbitmq
+    hostname: hello-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - ./.containers/queue/rabbitmq/data:/var/lib/rabbitmq
+      - ./.containers/queue/rabbitmq/log:/var/log/rabbitmq

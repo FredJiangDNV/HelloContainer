@@ -5,12 +5,12 @@ using MediatR;
 
 namespace HelloContainer.Application.EventHandlers
 {
-    public class ContainerCreatedDomainEventHandler(IBus bus) : INotificationHandler<ContainerCreatedDomainEvent>
+    public class ContainerCreatedDomainEventHandler(IPublishEndpoint publishEndpoint) : INotificationHandler<ContainerCreatedDomainEvent>
     {
         public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken cancellationToken)
         {
             var ie = new ContainerCreatedIntegrationEvent(@event.id, @event.containerId, @event.name);
-            await bus.Publish(ie, cancellationToken);
+            await publishEndpoint.Publish(ie, cancellationToken);
         }
     }
 }

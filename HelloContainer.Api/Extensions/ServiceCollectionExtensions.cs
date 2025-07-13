@@ -10,6 +10,8 @@ using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.Services;
 using HelloContainer.Application;
 using MassTransit;
+using HelloContainer.Api.Settings;
+using Microsoft.Extensions.Options;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -23,10 +25,22 @@ namespace HelloContainer.Api.Extensions
                 x.RegisterServicesFromAssemblyContaining<ContainerCreatedDomainEventHandler>();
             });
 
+            services.Configure<MessageBrokerSettings>(configuration.GetSection("MessageBroker"));
+            services.AddSingleton(sp => sp.GetRequiredService<IOptions<MessageBrokerSettings>>().Value);
+
             services.AddMassTransit(c =>
             {
-                c.UsingInMemory((context, cfg) =>
+                c.SetKebabCaseEndpointNameFormatter();
+                c.UsingRabbitMq((context, cfg) =>
                 {
+                    var settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
+                    
+                    cfg.Host(settings.Host, h =>
+                    {
+                        h.Username(settings.Username);
+                        h.Password(settings.Password);
+                    });
+                    
                     cfg.ConfigureEndpoints(context);
                 });
             });
