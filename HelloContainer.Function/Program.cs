@@ -4,7 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MassTransit;
 using HelloContainer.Function.Consumers;
-using Microsoft.Extensions.Options;
+using HelloContainer.Function.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = FunctionsApplication.CreateBuilder(args);
 
@@ -14,6 +15,15 @@ builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights();
 
+// Configure DbContext
+builder.Services.AddDbContext<LedgerDbContext>(options =>
+    options.UseCosmos(
+        connectionString: Environment.GetEnvironmentVariable("CosmosDB"),
+        databaseName: "HelloContainerDB"
+    ));
+
+
+// Configure MassTransit with RabbitMQ
 builder.Services.AddMassTransit(c =>
 {
     c.SetKebabCaseEndpointNameFormatter();
@@ -22,11 +32,8 @@ builder.Services.AddMassTransit(c =>
 
     c.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+        var rabbitMqConnection = Environment.GetEnvironmentVariable("RabbitMQ");
+        cfg.Host(rabbitMqConnection);
         cfg.ConfigureEndpoints(context);
     });
 });
