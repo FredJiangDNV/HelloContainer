@@ -22,19 +22,19 @@ namespace HelloContainer.Application.EventHandlers
         public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken cancellationToken)
         {
             var ie = new ContainerCreatedIntegrationEvent(@event.id, @event.containerId, @event.name);
-            await AddOutboxIntegrationEventAsync(ie);
+            var content = JsonSerializer.Serialize(ie);
+            await AddOutboxIntegrationEventAsync(ie, content);
         }
 
         public async Task Handle(ContainerDeletedDomainEvent @event, CancellationToken cancellationToken)
         {
             var ie = new ContainerDeletedIntegrationEvent(@event.id, @event.containerId, @event.name);
-            await AddOutboxIntegrationEventAsync(ie);
+            var content = JsonSerializer.Serialize(ie);
+            await AddOutboxIntegrationEventAsync(ie, content);
         }
 
-        private async Task AddOutboxIntegrationEventAsync(IIntegrationEvent integrationEvent)
+        private async Task AddOutboxIntegrationEventAsync(IIntegrationEvent integrationEvent, string content)
         {
-            var content = JsonSerializer.Serialize(integrationEvent);
-
             await _dbContext.OutboxIntegrationEvents.AddAsync(OutboxIntegrationEvent.Create(
                 integrationEvent.GetType().Name,
                 content));
