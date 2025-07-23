@@ -1,8 +1,8 @@
-﻿using HelloContainer.Domain.Common;
+﻿using HelloContainer.Domain.Abstractions;
 
 namespace HelloContainer.Domain.AlertAggregate
 {
-    public class Alert : Entity, IAggregateRoot
+    public class Alert : AggregateRoot
     {
         public Guid ContainerId { get; private set; }
         public string Message { get; private set; }
@@ -17,8 +17,7 @@ namespace HelloContainer.Domain.AlertAggregate
 
         public static Alert Create(Guid containerId, string message)
         {
-            var alert = new Alert(containerId, message);
-            return alert;
+            return new Alert(containerId, message);
         }
     }
 }

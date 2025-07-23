@@ -1,8 +1,8 @@
-﻿using HelloContainer.Domain.Common;
+﻿using HelloContainer.Domain.Abstractions;
 
 namespace HelloContainer.Domain.OutboxAggregate
 {
-    public class OutboxIntegrationEvent : Entity, IAggregateRoot
+    public class OutboxIntegrationEvent : AggregateRoot
     {
         public OutboxIntegrationEvent(string eventName, string eventContent) : base(Guid.NewGuid())
         {

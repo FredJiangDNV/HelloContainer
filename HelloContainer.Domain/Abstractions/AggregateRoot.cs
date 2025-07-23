@@ -1,27 +1,11 @@
-﻿namespace HelloContainer.Domain.Common
+﻿using HelloContainer.Domain.Common;
+
+namespace HelloContainer.Domain.Abstractions
 {
-    public abstract class Entity
+    public abstract class AggregateRoot : Entity
     {
-        public Guid Id { get; }
-
-        protected Entity(Guid id)
+        protected AggregateRoot(Guid id) : base(id)
         {
-            Id = id;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            if (obj is null || obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return ((Entity)obj).Id == Id;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
         }
 
         private readonly List<DomainEvent> _domainEvents = new();

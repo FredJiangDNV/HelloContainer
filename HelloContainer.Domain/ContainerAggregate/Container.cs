@@ -1,11 +1,11 @@
-﻿using HelloContainer.Domain.Common;
+﻿using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.ContainerAggregate.Events;
 using HelloContainer.Domain.Exceptions;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HelloContainer.Domain.ContainerAggregate
 {
-    public class Container : Entity, IAggregateRoot
+    public class Container : AggregateRoot
     {
         public string Name { get; private set; }
         public Amount Amount { get; private set; }

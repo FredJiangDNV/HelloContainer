@@ -1,4 +1,4 @@
-﻿using HelloContainer.Domain.Common;
+﻿using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.OutboxAggregate;
 using HelloContainer.Infrastructure.EntityConfigs;
 using MediatR;
@@ -35,7 +35,7 @@ namespace HelloContainer.Infrastructure
         private async Task PublishDomainEventsAsync()
         {
             var domainEvents = ChangeTracker
-                .Entries<Entity>()
+                .Entries<AggregateRoot>()
                 .Select(entry => entry.Entity)
                 .Where(e => e.DomainEvents.Any())
                 .SelectMany(entity =>
