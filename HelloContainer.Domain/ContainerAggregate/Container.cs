@@ -51,7 +51,15 @@ namespace HelloContainer.Domain.ContainerAggregate
 
         public void SetWater(double amount)
         {
+            if (amount > Capacity.Value)
+                throw new ContainerOverflowException(amount, Capacity.Value);
+
             Amount = Amount.Create(amount);
+
+            if (amount >= Capacity.Value * 0.8)
+            {
+                this.Raise(new WaterOverflowedDomainEvent(Guid.NewGuid(), Id, Name));
+            }
         }
 
         public void Disconnect(Guid otherContainerId)

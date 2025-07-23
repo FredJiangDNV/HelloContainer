@@ -21,6 +21,7 @@ namespace HelloContainer.Infrastructure
         {
             modelBuilder.ApplyConfiguration(new ContainerEntityConfig());
             modelBuilder.ApplyConfiguration(new OutboxIntegrationEventConfig());
+            modelBuilder.ApplyConfiguration(new AlertEntityConfig());
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
