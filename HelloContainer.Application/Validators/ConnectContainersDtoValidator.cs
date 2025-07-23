@@ -1,5 +1,5 @@
 using FluentValidation;
-using HelloContainer.Application.DTOs;
+using HelloContainer.DTOs;
 
 namespace HelloContainer.Application.Validators
 {

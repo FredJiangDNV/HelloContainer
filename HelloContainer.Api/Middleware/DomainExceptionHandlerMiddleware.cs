@@ -1,7 +1,6 @@
 using HelloContainer.Domain.Exceptions;
 using System.Net;
 using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace HelloContainer.Api.Middleware
 {

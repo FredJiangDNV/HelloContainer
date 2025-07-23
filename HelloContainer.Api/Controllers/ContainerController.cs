@@ -1,5 +1,5 @@
 ﻿using HelloContainer.Application;
-using HelloContainer.Application.DTOs;
+using HelloContainer.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloContainer.Api.Controllers

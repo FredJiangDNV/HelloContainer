@@ -19,6 +19,17 @@ namespace HelloContainer.Api.Extensions
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddMediatR(x =>
             {
                 x.Lifetime = ServiceLifetime.Scoped;
@@ -63,9 +74,9 @@ namespace HelloContainer.Api.Extensions
             // Add Services
             services.AddScoped<IContainerRepository, ContainerRepository>();
             services.AddScoped<ContainerService>();
-            services.AddScoped<IContainerManager, ContainerManager>();
+            services.AddScoped<ContainerManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IContainerFactory, ContainerFactory>();
+            services.AddScoped<ContainerFactory>();
 
             return services;
         }

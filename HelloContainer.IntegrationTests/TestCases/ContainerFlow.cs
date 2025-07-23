@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using HelloContainer.Application.DTOs;
+using HelloContainer.DTOs;
 using HelloContainer.IntegrationTests.Fixtures;
 using System.Net.Http.Json;
 using Xunit;

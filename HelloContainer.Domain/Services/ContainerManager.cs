@@ -4,7 +4,7 @@ using HelloContainer.Domain.Exceptions;
 
 namespace HelloContainer.Domain.Services
 {
-    public class ContainerManager : IContainerManager
+    public class ContainerManager
     {
         private readonly IContainerRepository _repository;
 

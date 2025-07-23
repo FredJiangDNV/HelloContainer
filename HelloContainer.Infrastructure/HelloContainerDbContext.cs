@@ -25,12 +25,9 @@ namespace HelloContainer.Infrastructure
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            // Before
-
             var result = await base.SaveChangesAsync(cancellationToken);
-
-            // After
             await PublishDomainEventsAsync();
+
             return result;
         }
 

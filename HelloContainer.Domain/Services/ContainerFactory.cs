@@ -3,7 +3,7 @@ using HelloContainer.Domain.ContainerAggregate;
 
 namespace HelloContainer.Domain.Services;
 
-public class ContainerFactory : IContainerFactory
+public class ContainerFactory
 {
     private readonly IContainerRepository _containerRepository;
 

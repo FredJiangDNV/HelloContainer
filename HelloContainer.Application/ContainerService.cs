@@ -1,5 +1,5 @@
 using AutoMapper;
-using HelloContainer.Application.DTOs;
+using HelloContainer.DTOs;
 using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.Services;
 
@@ -10,10 +10,10 @@ namespace HelloContainer.Application
         private readonly IContainerRepository _containerRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IContainerManager _containerManager;
-        private readonly IContainerFactory _containerFactory;
+        private readonly ContainerManager _containerManager;
+        private readonly ContainerFactory _containerFactory;
 
-        public ContainerService(IContainerRepository containerRepository, IMapper mapper, IUnitOfWork unitOfWork, IContainerManager containerManager, IContainerFactory containerFactory)
+        public ContainerService(IContainerRepository containerRepository, IMapper mapper, IUnitOfWork unitOfWork, ContainerManager containerManager, ContainerFactory containerFactory)
         {
             _containerRepository = containerRepository;
             _mapper = mapper;
