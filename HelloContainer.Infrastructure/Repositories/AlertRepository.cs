@@ -1,11 +1,6 @@
 using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.AlertAggregate;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HelloContainer.Infrastructure.Repositories
 {

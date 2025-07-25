@@ -18,7 +18,7 @@ namespace HelloContainer.Application.EventHandlers
 
         public async Task Handle(WaterOverflowedDomainEvent @event, CancellationToken cancellationToken)
         {
-            var alert = Alert.Create(@event.containerId, $"Container {@event.name} has overflowed with water.");
+            var alert = Alert.Create(@event.containerId, $"Container {@event.containerId} has overflowed with water.");
             _alertRepository.Add(alert);
 
             await _unitOfWork.SaveChangesAsync();

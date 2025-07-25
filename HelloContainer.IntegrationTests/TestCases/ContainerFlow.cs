@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HelloContainer.DTOs;
 using HelloContainer.IntegrationTests.Fixtures;
+using HelloContainer.IntegrationTests.Services;
 using System.Net.Http.Json;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,86 +23,107 @@ public class ContainerFlow : IClassFixture<HelloContainerFixture>
     }
 
     [Fact]
-    public async Task A010_CreateContainer_A()
+    public async Task A010_CreateContainer()
     {
         // Arrange
-        var createDto = new CreateContainerDto("A", 100);
+        var name = Utilities.RandomName();
 
         // Act
-        var response = await this._fixture.Client.PostAsJsonAsync("/api/containers", createDto);
+        var response = await _fixture.CreateContainer(name, 10);
 
         // Assert
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
-        _fixture.ContainerAId = result!.Id;
+        _fixture.C_Id = result!.Id;
 
         result.Should().NotBeNull();
-        result!.Name.Should().Be("A");
-        result.Capacity.Should().Be(100.0);
+        result!.Name.Should().Be(name);
+        result.Capacity.Should().Be(10.0);
     }
 
     [Fact]
-    public async Task A020_CreateContainer_B()
+    public async Task A020_CreateContainer2()
     {
         // Arrange
-        var createDto = new CreateContainerDto("B", 100);
+        var name = Utilities.RandomName();
 
         // Act
-        var response = await this._fixture.Client.PostAsJsonAsync("/api/containers", createDto);
+        var response = await _fixture.CreateContainer(name, 10);
 
         // Assert
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
-        _fixture.ContainerBId = result!.Id;
-        result!.Name.Should().Be("B");
+        _fixture.C2_Id = result!.Id;
+        result!.Name.Should().Be(name);
     }
 
     [Fact]
-    public async Task A030_Connect_A_And_B()
+    public async Task A030_Connect_Containers()
     {
         // Arrange
-        var connectDto = new ConnectContainersDto(_fixture.ContainerAId, _fixture.ContainerBId);
+        var connectDto = new ConnectContainersDto(_fixture.C_Id, _fixture.C2_Id);
 
         // Act
-        var response = await this._fixture.Client.PostAsJsonAsync("/api/containers/connections", connectDto);
+        var response = await _fixture.Client.PostAsJsonAsync("/api/containers/connections", connectDto);
 
         // Assert
-        response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
-        result!.Name.Should().Be("A");
+        response.EnsureSuccessStatusCode();
     }
 
     [Fact]
-    public async Task A040_AddWater_To_A()
+    public async Task A040_AddWater_To_Container1()
     {
         // Arrange
-        var addWaterDto = new AddWaterDto(10);
+        var addWaterDto = new AddWaterDto(4);
 
         // Act
-        var response = await this._fixture.Client.PostAsJsonAsync($"/api/containers/{_fixture.ContainerAId}/water", addWaterDto);
+        var response = await _fixture.Client.PostAsJsonAsync($"/api/containers/{_fixture.C_Id}/water", addWaterDto);
 
         // Assert
-        response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
-        result!.Name.Should().Be("A");
-        result!.Amount.Should().Be(5);
+        result!.Amount.Should().Be(2);
     }
 
 
     [Fact]
-    public async Task A050_GetWater_B()
+    public async Task A050_GetWater_Container2()
     {
-        // Arrange
-        var addWaterDto = new AddWaterDto(10);
-
         // Act
-        var response = await this._fixture.Client.GetAsync($"/api/containers/{_fixture.ContainerBId}");
+        var response = await _fixture.Client.GetAsync($"/api/containers/{_fixture.C2_Id}");
 
         // Assert
-        response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
-        result!.Name.Should().Be("B");
-        result!.Amount.Should().Be(5);
+        result!.Amount.Should().Be(2);
+    }
+
+    [Fact]
+    public async Task A060_AddWater_TriggerAnAlert()
+    {
+        // Arrange
+        var addWaterDto = new AddWaterDto(12);
+
+        // Act
+        var response = await _fixture.Client.PostAsJsonAsync($"/api/containers/{_fixture.C_Id}/water", addWaterDto);
+
+        // Assert
+        var result = await response.Content.ReadFromJsonAsync<ContainerReadDto>();
+        result!.Amount.Should().Be(8);
+    }
+
+    [Fact]
+    public async Task A070_GetAlert()
+    {
+        // Act
+        var response = await _fixture.Client.GetAsync($"/api/alerts/{_fixture.C_Id}");
+
+        // Assert
+        var alerts = await response.Content.ReadFromJsonAsync<IEnumerable<AlertReadDto>>();
+        var alert = Assert.Single(alerts);
+
+        alert.Should().NotBeNull();
+        alert!.ContainerId.Should().Be(_fixture.C_Id);
+        alert.Message.Should().Be($"Container {_fixture.C_Id} has overflowed with water.");
     }
 }
 

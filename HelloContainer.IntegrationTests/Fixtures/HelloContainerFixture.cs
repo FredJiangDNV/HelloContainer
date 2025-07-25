@@ -3,8 +3,8 @@
 public class HelloContainerFixture : IDisposable
 {
     public HttpClient Client { get; set; }
-    public Guid ContainerAId { get; set; }
-    public Guid ContainerBId { get; set; }
+    public Guid C_Id { get; set; }
+    public Guid C2_Id { get; set; }
 
     public HelloContainerFixture()
     {
