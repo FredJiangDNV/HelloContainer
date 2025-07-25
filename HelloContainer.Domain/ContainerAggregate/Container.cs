@@ -1,6 +1,6 @@
-﻿using HelloContainer.Domain.Abstractions;
-using HelloContainer.Domain.ContainerAggregate.Events;
+﻿using HelloContainer.Domain.ContainerAggregate.Events;
 using HelloContainer.Domain.Exceptions;
+using HelloContainer.SharedKernel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HelloContainer.Domain.ContainerAggregate

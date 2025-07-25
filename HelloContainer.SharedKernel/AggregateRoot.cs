@@ -1,6 +1,4 @@
-﻿using HelloContainer.Domain.Common;
-
-namespace HelloContainer.Domain.Abstractions
+﻿namespace HelloContainer.SharedKernel
 {
     public abstract class AggregateRoot : Entity
     {
@@ -12,14 +10,12 @@ namespace HelloContainer.Domain.Abstractions
 
         public ICollection<DomainEvent> DomainEvents => _domainEvents;
 
-        public IReadOnlyList<DomainEvent> GetDomainEvents()
+        public List<DomainEvent> PopDomainEvents()
         {
-            return _domainEvents.ToList();
-        }
-
-        public void ClearDomainEvents()
-        {
+            var copy = _domainEvents.ToList();
             _domainEvents.Clear();
+
+            return copy;
         }
 
         protected void Raise(DomainEvent domainEvent)

@@ -1,4 +1,4 @@
-﻿namespace HelloContainer.Domain.Abstractions
+﻿namespace HelloContainer.SharedKernel
 {
     public abstract class Entity
     {

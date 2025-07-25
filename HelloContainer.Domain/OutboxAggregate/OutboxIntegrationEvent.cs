@@ -1,4 +1,4 @@
-﻿using HelloContainer.Domain.Abstractions;
+﻿using HelloContainer.SharedKernel;
 
 namespace HelloContainer.Domain.OutboxAggregate
 {

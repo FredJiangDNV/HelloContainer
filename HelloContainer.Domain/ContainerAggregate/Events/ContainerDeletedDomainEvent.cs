@@ -1,4 +1,4 @@
-﻿using HelloContainer.Domain.Common;
+﻿using HelloContainer.SharedKernel;
 
 namespace HelloContainer.Domain.ContainerAggregate.Events
 {

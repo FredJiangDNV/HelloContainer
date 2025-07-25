@@ -1,6 +1,6 @@
-﻿using HelloContainer.Domain.Abstractions;
-using HelloContainer.Domain.OutboxAggregate;
+﻿using HelloContainer.Domain.OutboxAggregate;
 using HelloContainer.Infrastructure.EntityConfigs;
+using HelloContainer.SharedKernel;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +27,7 @@ namespace HelloContainer.Infrastructure
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var result = await base.SaveChangesAsync(cancellationToken);
+            
             await PublishDomainEventsAsync();
 
             return result;
@@ -36,16 +37,8 @@ namespace HelloContainer.Infrastructure
         {
             var domainEvents = ChangeTracker
                 .Entries<AggregateRoot>()
-                .Select(entry => entry.Entity)
-                .Where(e => e.DomainEvents.Any())
-                .SelectMany(entity =>
-                {
-                    var domainEvents = entity.GetDomainEvents();
-
-                    entity.ClearDomainEvents();
-
-                    return domainEvents;
-                })
+                .Select(entry => entry.Entity.PopDomainEvents())
+                .SelectMany(x => x)
                 .ToList();
 
             foreach (var domainEvent in domainEvents)
