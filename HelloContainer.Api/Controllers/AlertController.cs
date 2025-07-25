@@ -1,4 +1,4 @@
-using HelloContainer.Domain.Abstractions;
+using HelloContainer.Application;
 using HelloContainer.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,19 +8,18 @@ namespace HelloContainer.Api.Controllers
     [Route("api/[controller]s")]
     public class AlertController : ControllerBase
     {
-        private readonly IAlertRepository _alertRepository;
+        private readonly AlertService _alertService;
 
-        public AlertController(IAlertRepository alertRepository)
+        public AlertController(AlertService alertService)
         {
-            _alertRepository = alertRepository;
+            _alertService = alertService;
         }
 
         [HttpGet("{containerId}")]
         public async Task<ActionResult<IEnumerable<AlertReadDto>>> GetAlerts([FromRoute] Guid containerId)
         {
-            var alerts = await _alertRepository.FindByContainerIdAsync(containerId);
-            var result = alerts.Select(a => new AlertReadDto(a.Id, a.ContainerId, a.Message, a.CreatedAt));
-            return Ok(result);
+            var alerts = await _alertService.GetAlertsByContainerId(containerId);
+            return Ok(alerts);
         }
     }
 } 

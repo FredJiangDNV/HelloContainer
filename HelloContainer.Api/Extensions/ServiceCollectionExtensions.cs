@@ -78,6 +78,7 @@ namespace HelloContainer.Api.Extensions
             services.AddScoped<ContainerManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ContainerFactory>();
+            services.AddScoped<AlertService>();
 
             return services;
         }
