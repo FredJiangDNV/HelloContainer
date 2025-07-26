@@ -58,7 +58,7 @@ namespace HelloContainer.Api.Extensions
 
             services.AddHostedService<OutboxBackgroundService>();
 
-            services.AddAutoMapper(typeof(ContainerMappingProfile));
+            services.AddAutoMapper(typeof(ContainerMappingProfile).Assembly);
 
             // Add FluentValidation
             services.AddFluentValidationAutoValidation()

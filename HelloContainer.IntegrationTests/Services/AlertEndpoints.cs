@@ -8,7 +8,7 @@ namespace HelloContainer.IntegrationTests.Services
     {
         public static async Task<IEnumerable<AlertReadDto>?> GetAlerts(this HelloContainerFixture fixture, Guid containerId)
         {
-            var response = await fixture.Client.GetAsync($"/api/alerts/{containerId}");
+            var response = await fixture.Client.GetAsync($"/api/alerts?containerId={containerId}");
             return await response.Content.ReadFromJsonAsync<IEnumerable<AlertReadDto>>();
         }
     }

@@ -15,8 +15,8 @@ namespace HelloContainer.Api.Controllers
             _alertService = alertService;
         }
 
-        [HttpGet("{containerId}")]
-        public async Task<ActionResult<IEnumerable<AlertReadDto>>> GetAlerts([FromRoute] Guid containerId)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AlertReadDto>>> GetAlerts([FromQuery] Guid containerId)
         {
             var alerts = await _alertService.GetAlertsByContainerId(containerId);
             return Ok(alerts);
