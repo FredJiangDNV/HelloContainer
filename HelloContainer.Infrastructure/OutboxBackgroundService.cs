@@ -39,7 +39,8 @@ namespace HelloContainer.Infrastructure
 
             foreach (var e in outboxIntegrationEvents)
             {
-                var eventType = Type.GetType($"HelloContainer.Common.IntegrationEvents.{e.EventName}, HelloContainer.Common");
+                // TODO: Hard code namespace need fix
+                var eventType = Type.GetType($"HelloContainer.SharedKernel.IntegrationEvents.{e.EventName}, HelloContainer.SharedKernel");
                 var integrationEvent = JsonSerializer.Deserialize(e.EventContent, eventType);
                 if (integrationEvent != null)
                 {
