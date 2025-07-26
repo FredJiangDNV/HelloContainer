@@ -1,4 +1,4 @@
-﻿namespace HelloContainer.Common.IntegrationEvents
+﻿namespace HelloContainer.SharedKernel.IntegrationEvents
 {
     public record ContainerCreatedIntegrationEvent(Guid id, Guid containerId, string name) : IIntegrationEvent
     {

@@ -1,8 +1,8 @@
-﻿using HelloContainer.Common.IntegrationEvents;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 using HelloContainer.Function.Data;
 using HelloContainer.Function.Data.Entities;
+using HelloContainer.SharedKernel.IntegrationEvents;
 
 namespace HelloContainer.Function.Consumers
 {

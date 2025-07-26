@@ -1,8 +1,8 @@
-﻿using HelloContainer.Common;
-using HelloContainer.Common.IntegrationEvents;
-using HelloContainer.Domain.ContainerAggregate.Events;
+﻿using HelloContainer.Domain.ContainerAggregate.Events;
 using HelloContainer.Domain.OutboxAggregate;
 using HelloContainer.Infrastructure;
+using HelloContainer.SharedKernel;
+using HelloContainer.SharedKernel.IntegrationEvents;
 using MediatR;
 using System.Text.Json;
 
