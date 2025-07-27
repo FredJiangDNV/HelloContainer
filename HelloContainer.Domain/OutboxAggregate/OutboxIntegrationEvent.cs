@@ -4,7 +4,7 @@ namespace HelloContainer.Domain.OutboxAggregate
 {
     public class OutboxIntegrationEvent : AggregateRoot
     {
-        public OutboxIntegrationEvent(string eventName, string eventContent) : base(Guid.NewGuid())
+        public OutboxIntegrationEvent(string eventName, string eventContent)
         {
             EventName = eventName;
             EventContent = eventContent;
@@ -15,8 +15,7 @@ namespace HelloContainer.Domain.OutboxAggregate
 
         public static OutboxIntegrationEvent Create(string eventName, string eventContent)
         {
-            var outboxEvent = new OutboxIntegrationEvent(eventName, eventContent);
-            return outboxEvent;
+            return new OutboxIntegrationEvent(eventName, eventContent);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using HelloContainer.SharedKernel;
 
-namespace HelloContainer.Domain.ContainerAggregate.Events
-{
-    public record ContainerDeletedDomainEvent(Guid id, Guid containerId, string name) : DomainEvent(id);
-}
+namespace HelloContainer.Domain.ContainerAggregate.Events;
+
+public record ContainerDeletedDomainEvent(Guid ContainerId, string Name) : DomainEvent;

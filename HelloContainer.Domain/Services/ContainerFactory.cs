@@ -1,5 +1,6 @@
 ﻿using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.ContainerAggregate;
+using HelloContainer.SharedKernel;
 
 namespace HelloContainer.Domain.Services;
 
@@ -12,14 +13,17 @@ public class ContainerFactory
         _containerRepository = containerRepository;
     }
 
-    public async Task<Container> CreateContainer(string name, double capacity)
+    public async Task<Result<Container>> CreateContainer(string name, double capacity)
     {
         var exists = (await _containerRepository.FindAsync(x => x.Name == name)).Any();
         if (exists)
-            throw new Exception($"Container name '{name}' already exists.");
+            return Result.Failure<Container>(Error.Conflict("Container.NameExists", $"Container name '{name}' already exists."));
 
         var container = Container.Create(name, capacity);
-        _containerRepository.Add(container);
+        if (container.IsFailure)
+            return container;
+
+        _containerRepository.Add(container.Value);
         return container;
     }
 }

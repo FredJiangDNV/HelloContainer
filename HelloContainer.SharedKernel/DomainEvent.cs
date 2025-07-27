@@ -1,6 +1,7 @@
 ﻿using MediatR;
+namespace HelloContainer.SharedKernel;
 
-namespace HelloContainer.SharedKernel
+public record DomainEvent : INotification
 {
-    public record DomainEvent(Guid id) : INotification;
+    public Guid Id { get; } = Guid.NewGuid();
 }

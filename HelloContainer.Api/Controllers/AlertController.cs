@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HelloContainer.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]s")]
-    public class AlertController : ControllerBase
+    public class AlertController : ApiControllerBase
     {
         private readonly AlertService _alertService;
 

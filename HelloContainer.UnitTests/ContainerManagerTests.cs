@@ -21,11 +21,23 @@ namespace HelloContainer.UnitTests
         public async Task ComplexConnectionAndWaterDistribution_ShouldShareWaterEquallyAmongAllConnected()
         {
             // Arrange
-            var a = Container.Create("a", 100);
-            var b = Container.Create("b", 100);
-            var c = Container.Create("c", 100);
-            var d = Container.Create("d", 100);
-            var e = Container.Create("e", 100);
+            var aResult = Container.Create("a", 100);
+            var bResult = Container.Create("b", 100);
+            var cResult = Container.Create("c", 100);
+            var dResult = Container.Create("d", 100);
+            var eResult = Container.Create("e", 100);
+
+            Assert.True(aResult.IsSuccess);
+            Assert.True(bResult.IsSuccess);
+            Assert.True(cResult.IsSuccess);
+            Assert.True(dResult.IsSuccess);
+            Assert.True(eResult.IsSuccess);
+
+            var a = aResult.Value;
+            var b = bResult.Value;
+            var c = cResult.Value;
+            var d = dResult.Value;
+            var e = eResult.Value;
 
             // Setup repository to return containers by ID
             _mockRepository.Setup(r => r.GetById(a.Id)).ReturnsAsync(a);

@@ -20,7 +20,7 @@ namespace HelloContainer.Domain.ContainerAggregate
             set => ConnectedContainerIdsRaw = value?.Select(g => g.ToString()).ToList() ?? new();
         }
 
-        private Container(string name, Capacity capacity) : base(Guid.NewGuid())
+        private Container(string name, Capacity capacity)
         {
             Name = name;
             Capacity = capacity;
@@ -28,11 +28,17 @@ namespace HelloContainer.Domain.ContainerAggregate
             ConnectedContainerIds = new List<Guid>();
         }
 
-        public static Container Create(string name, double capacity)
+        public static Result<Container> Create(string name, double capacity)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                return Result.Failure<Container>(Error.Validation("Container.InvalidName", "Container name cannot be empty."));
+
+            if (capacity <= 0)
+                return Result.Failure<Container>(Error.Validation("Container.InvalidCapacity", "Container capacity must be greater than zero."));
+
             var container = new Container(name, Capacity.Create(capacity));
-            container.Raise(new ContainerCreatedDomainEvent(Guid.NewGuid(), container.Id, name));
-            return container;
+            container.Raise(new ContainerCreatedDomainEvent(container.Id, name));
+            return Result.Success(container);
         }
 
         public void ConnectTo(Guid otherContainerId)
@@ -58,7 +64,7 @@ namespace HelloContainer.Domain.ContainerAggregate
 
             if (amount >= Capacity.Value * 0.8)
             {
-                this.Raise(new WaterOverflowedDomainEvent(Guid.NewGuid(), Id, Name));
+                this.Raise(new WaterOverflowedDomainEvent(Id, Name));
             }
         }
 
@@ -76,7 +82,7 @@ namespace HelloContainer.Domain.ContainerAggregate
         public void Delete()
         {
             IsDeleted = true;
-            this.Raise(new ContainerDeletedDomainEvent(Guid.NewGuid(), Id, Name));
+            this.Raise(new ContainerDeletedDomainEvent(Id, Name));
         }
     }
 }

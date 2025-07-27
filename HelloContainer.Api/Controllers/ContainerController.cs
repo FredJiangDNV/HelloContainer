@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HelloContainer.Api.Controllers
 {
-    [ApiController]
     [Route("api/[controller]s")]
-    public class ContainerController : ControllerBase
+    public class ContainerController : ApiControllerBase
     {
         private readonly ContainerService _containerService;
 
@@ -18,8 +17,11 @@ namespace HelloContainer.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<ContainerReadDto>> CreateContainer(CreateContainerDto createDto)
         {
-            var container = await _containerService.CreateContainer(createDto);
-            return CreatedAtAction(nameof(GetContainerById), new { id = container.Id }, container);
+            var result = await _containerService.CreateContainer(createDto);
+            if (result.IsFailure)
+                return HandleError(result.Error);
+
+            return CreatedAtAction(nameof(GetContainerById), new { id = result.Value.Id }, result.Value);
         }
 
         [HttpGet]
@@ -37,9 +39,10 @@ namespace HelloContainer.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task DeleteContainer(Guid id)
+        public async Task<IActionResult> DeleteContainer(Guid id)
         {
             await _containerService.DeleteContainer(id);
+            return NoContent();
         }
 
         [HttpPost("{id}/water")]

@@ -21,14 +21,14 @@ namespace HelloContainer.Application.EventHandlers
 
         public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken cancellationToken)
         {
-            var ie = new ContainerCreatedIntegrationEvent(@event.id, @event.containerId, @event.name);
+            var ie = new ContainerCreatedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
             var content = JsonSerializer.Serialize(ie);
             await AddOutboxIntegrationEventAsync(ie, content);
         }
 
         public async Task Handle(ContainerDeletedDomainEvent @event, CancellationToken cancellationToken)
         {
-            var ie = new ContainerDeletedIntegrationEvent(@event.id, @event.containerId, @event.name);
+            var ie = new ContainerDeletedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
             var content = JsonSerializer.Serialize(ie);
             await AddOutboxIntegrationEventAsync(ie, content);
         }

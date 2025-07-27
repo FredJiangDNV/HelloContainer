@@ -4,9 +4,9 @@
     {
         public Guid Id { get; }
 
-        protected Entity(Guid id)
+        protected Entity()
         {
-            Id = id;
+            Id = Guid.NewGuid();
         }
 
         public override bool Equals(object? obj)

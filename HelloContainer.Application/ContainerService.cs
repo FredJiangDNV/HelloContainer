@@ -2,6 +2,7 @@ using AutoMapper;
 using HelloContainer.DTOs;
 using HelloContainer.Domain.Abstractions;
 using HelloContainer.Domain.Services;
+using HelloContainer.SharedKernel;
 
 namespace HelloContainer.Application
 {
@@ -22,11 +23,14 @@ namespace HelloContainer.Application
             _containerFactory = containerFactory;
         }
 
-        public async Task<ContainerReadDto> CreateContainer(CreateContainerDto createDto)
+        public async Task<Result<ContainerReadDto>> CreateContainer(CreateContainerDto createDto)
         {
-            var container = await _containerFactory.CreateContainer(createDto.Name, createDto.Capacity);
+            var containerResult = await _containerFactory.CreateContainer(createDto.Name, createDto.Capacity);
+            if (containerResult.IsFailure)
+                return Result.Failure<ContainerReadDto>(containerResult.Error);
+
             await _unitOfWork.SaveChangesAsync();
-            return _mapper.Map<ContainerReadDto>(container);
+            return Result.Success(_mapper.Map<ContainerReadDto>(containerResult.Value));
         }
 
         public async Task<IEnumerable<ContainerReadDto>> GetContainers(string? searchKeyword = null)

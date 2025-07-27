@@ -8,7 +8,7 @@ namespace HelloContainer.Domain.AlertAggregate
         public string Message { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
-        private Alert(Guid containerId, string message) : base(Guid.NewGuid())
+        private Alert(Guid containerId, string message)
         {
             ContainerId = containerId;
             Message = message;
