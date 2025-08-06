@@ -29,6 +29,8 @@ namespace HelloContainer.Application
             if (containerResult.IsFailure)
                 return Result.Failure<ContainerReadDto>(containerResult.Error);
 
+            // Domain Layer should not include persistence logic
+            _containerRepository.Add(containerResult.Value);
             await _unitOfWork.SaveChangesAsync();
             return Result.Success(_mapper.Map<ContainerReadDto>(containerResult.Value));
         }
@@ -50,6 +52,7 @@ namespace HelloContainer.Application
         public async Task<ContainerReadDto> AddWater(Guid containerId, double amount)
         {
             var container = await _containerManager.AddWater(containerId, amount);
+
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ContainerReadDto>(container);
         }

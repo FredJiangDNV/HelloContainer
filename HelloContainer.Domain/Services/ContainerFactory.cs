@@ -17,13 +17,8 @@ public class ContainerFactory
     {
         var exists = (await _containerRepository.FindAsync(x => x.Name == name)).Any();
         if (exists)
-            return Result.Failure<Container>(Error.Conflict("Container.NameExists", $"Container name '{name}' already exists."));
+            return Result.Failure<Container>(ContainerErrors.Conflict.NameExists(name));
 
-        var container = Container.Create(name, capacity);
-        if (container.IsFailure)
-            return container;
-
-        _containerRepository.Add(container.Value);
-        return container;
+        return Container.Create(name, capacity);
     }
 }

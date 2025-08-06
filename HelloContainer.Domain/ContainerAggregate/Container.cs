@@ -31,10 +31,10 @@ namespace HelloContainer.Domain.ContainerAggregate
         public static Result<Container> Create(string name, double capacity)
         {
             if (string.IsNullOrWhiteSpace(name))
-                return Result.Failure<Container>(Error.Validation("Container.InvalidName", "Container name cannot be empty."));
+                return Result.Failure<Container>(ContainerErrors.Validation.EmptyName);
 
             if (capacity <= 0)
-                return Result.Failure<Container>(Error.Validation("Container.InvalidCapacity", "Container capacity must be greater than zero."));
+                return Result.Failure<Container>(ContainerErrors.Validation.InvalidCapacity(capacity));
 
             var container = new Container(name, Capacity.Create(capacity));
             container.Raise(new ContainerCreatedDomainEvent(container.Id, name));
