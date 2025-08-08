@@ -20,6 +20,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="9.0.6" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HelloContainer.SharedKernel\HelloContainer.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\SharedKernel\HelloContainer.SharedKernel.csproj" />
   </ItemGroup>
 </Project>
