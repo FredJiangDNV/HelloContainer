@@ -20,27 +20,27 @@ namespace HelloContainer.Domain.Services
             return container;
         }
 
-        public async Task<Container> ConnectContainers(Guid sourceContainerId, Guid targetContainerId)
+        public async Task<Container> ConnectContainers(Guid sourceId, Guid targetId)
         {
-            var sourceContainer = await GetContainerOrThrow(sourceContainerId);
-            var targetContainer = await GetContainerOrThrow(targetContainerId);
+            var source = await GetContainerOrThrow(sourceId);
+            var target = await GetContainerOrThrow(targetId);
 
-            sourceContainer!.ConnectTo(targetContainerId);
-            targetContainer!.ConnectTo(sourceContainerId);
+            source!.ConnectTo(targetId);
+            target!.ConnectTo(sourceId);
 
-            await SetWaterForAllConnectedContainers(sourceContainerId);
-            return sourceContainer;
+            await SetWaterForAllConnectedContainers(sourceId);
+            return source;
         }
 
-        public async Task<Container> DisconnectContainers(Guid sourceContainerId, Guid targetContainerId)
+        public async Task<Container> DisconnectContainers(Guid sourceId, Guid targetId)
         {
-            var sourceContainer = await GetContainerOrThrow(sourceContainerId);
-            var targetContainer = await GetContainerOrThrow(targetContainerId);
+            var source = await GetContainerOrThrow(sourceId);
+            var target = await GetContainerOrThrow(targetId);
 
-            sourceContainer!.Disconnect(targetContainerId);
-            targetContainer!.Disconnect(sourceContainerId);
+            source!.Disconnect(targetId);
+            target!.Disconnect(sourceId);
 
-            return sourceContainer;
+            return source;
         }
 
         private async Task SetWaterForAllConnectedContainers(Guid containerId, double addedAmount = 0)
@@ -53,12 +53,12 @@ namespace HelloContainer.Domain.Services
                 c.SetWater(avg);
         }
 
-        private async Task<Container?> GetContainerOrThrow(Guid sourceContainerId)
+        private async Task<Container?> GetContainerOrThrow(Guid sourceId)
         {
-            var sourceContainer = await _repository.GetById(sourceContainerId);
-            if (sourceContainer == null)
-                throw new ContainerNotFoundException(sourceContainerId);
-            return sourceContainer;
+            var source = await _repository.GetById(sourceId);
+            if (source == null)
+                throw new ContainerNotFoundException(sourceId);
+            return source;
         }
 
         private async Task<List<Container>> GetAllConnectedContainers(Guid containerId)
