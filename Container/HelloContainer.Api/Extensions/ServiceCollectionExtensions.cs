@@ -33,7 +33,7 @@ namespace HelloContainer.Api.Extensions
             services.AddMediatR(x =>
             {
                 x.Lifetime = ServiceLifetime.Scoped;
-                x.RegisterServicesFromAssemblyContaining<OutboxWriterEventHandler>();
+                x.RegisterServicesFromAssemblyContaining<ContainerCreatedDomainEventHandler>();
             });
 
             services.Configure<MessageBrokerSettings>(configuration.GetSection("MessageBroker"));
@@ -55,8 +55,6 @@ namespace HelloContainer.Api.Extensions
                     cfg.ConfigureEndpoints(context);
                 });
             });
-
-            services.AddHostedService<OutboxBackgroundService>();
 
             services.AddAutoMapper(typeof(ContainerMappingProfile).Assembly);
 

@@ -1,5 +1,4 @@
-﻿using HelloContainer.Domain.OutboxAggregate;
-using HelloContainer.Infrastructure.EntityConfigs;
+﻿using HelloContainer.Infrastructure.EntityConfigs;
 using HelloContainer.SharedKernel;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +14,9 @@ namespace HelloContainer.Infrastructure
             _publisher = publisher;
         }
 
-        public DbSet<OutboxIntegrationEvent> OutboxIntegrationEvents { get; set; } = null!;
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ContainerEntityConfig());
-            modelBuilder.ApplyConfiguration(new OutboxIntegrationEventConfig());
             modelBuilder.ApplyConfiguration(new AlertEntityConfig());
         }
 
