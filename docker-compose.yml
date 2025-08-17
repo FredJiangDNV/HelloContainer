@@ -2,24 +2,20 @@ version: '3.8'
 
 services:
   # CosmosDB Emulator for local development
-  cosmosdb:
-    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
-    container_name: hello-container-cosmosdb
-    hostname: cosmosdb
-    environment:
-      - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
-      - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
-      - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=0.0.0.0
-    ports:
-      - "8081:8081"
-      - "10251:10251"
-      - "10252:10252"
-      - "10253:10253"
-      - "10254:10254"
-    volumes:
-      - ./.containers/cosmosdb:/data/db
-    networks:
-      - hello-container-network
+  # cosmosdb:
+  #   image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+  #   container_name: hello-container-cosmosdb
+  #   hostname: cosmosdb
+  #   environment:
+  #     - AZURE_COSMOS_EMULATOR_PARTITION_COUNT=10
+  #     - AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE=true
+  #     - AZURE_COSMOS_EMULATOR_IP_ADDRESS_OVERRIDE=0.0.0.0
+  #   ports:
+  #     - "8081:8081"
+  #   volumes:
+  #     - ./.containers/cosmosdb:/data/db
+  #   networks:
+  #     - hello-container-network
 
   # RabbitMQ Message Broker
   rabbitmq:
@@ -44,65 +40,65 @@ services:
       retries: 3
 
   # HelloContainer Web API
-  api:
-    build:
-      context: .
-      dockerfile: Container/HelloContainer.Api/Dockerfile
-    container_name: hello-container-api
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__CosmosDB=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;DisableServerCertificateValidation=true
-      - DatabaseSettings__DatabaseName=HelloContainerDB
-      - MessageBroker__Host=hello-rabbitmq
-      - MessageBroker__Username=guest
-      - MessageBroker__Password=guest
-    ports:
-      - "5000:80"
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      cosmosdb:
-        condition: service_started
-    networks:
-      - hello-container-network
-    restart: unless-stopped
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Container/HelloContainer.Api/Dockerfile
+  #   container_name: hello-container-api
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=http://+:80
+  #     - ConnectionStrings__CosmosDB=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;DisableServerCertificateValidation=true
+  #     - DatabaseSettings__DatabaseName=HelloContainerDB
+  #     - MessageBroker__Host=hello-rabbitmq
+  #     - MessageBroker__Username=guest
+  #     - MessageBroker__Password=guest
+  #   ports:
+  #     - "5000:80"
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     cosmosdb:
+  #       condition: service_started
+  #   networks:
+  #     - hello-container-network
+  #   restart: unless-stopped
 
   # HelloContainer Azure Function
-  function:
-    build:
-      context: .
-      dockerfile: Ledger/HelloContainer.Function/Dockerfile
-    container_name: hello-container-function
-    environment:
-      - AzureWebJobsStorage=UseDevelopmentStorage=true
-      - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
-      - RabbitMQ=amqp://guest:guest@hello-rabbitmq:5672
-      - CosmosDB=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;DisableServerCertificateValidation=true
-    ports:
-      - "7071:80"
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      cosmosdb:
-        condition: service_started
-    networks:
-      - hello-container-network
-    restart: unless-stopped
+  # function:
+  #   build:
+  #     context: .
+  #     dockerfile: Ledger/HelloContainer.Function/Dockerfile
+  #   container_name: hello-container-function
+  #   environment:
+  #     - AzureWebJobsStorage=UseDevelopmentStorage=true
+  #     - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
+  #     - RabbitMQ=amqp://guest:guest@hello-rabbitmq:5672
+  #     - CosmosDB=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;DisableServerCertificateValidation=true
+  #   ports:
+  #     - "7071:80"
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #     cosmosdb:
+  #       condition: service_started
+  #   networks:
+  #     - hello-container-network
+  #   restart: unless-stopped
 
   # React Frontend
-  web:
-    build:
-      context: ./Web
-      dockerfile: Dockerfile
-    container_name: hello-container-web
-    ports:
-      - "3000:80"
-    depends_on:
-      - api
-    networks:
-      - hello-container-network
-    restart: unless-stopped
+  # web:
+  #   build:
+  #     context: ./Web
+  #     dockerfile: Dockerfile
+  #   container_name: hello-container-web
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - hello-container-network
+  #   restart: unless-stopped
 
 networks:
   hello-container-network:
