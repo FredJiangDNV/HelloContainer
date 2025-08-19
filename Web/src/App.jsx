@@ -54,7 +54,13 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newContainerName, capacity: newContainerCapacity })
       });
-      if (!res.ok) throw new Error("Failed to add container");
+
+      if (!res.ok) {
+        const errorData = await res.json();
+                const errorMessage = errorData.message || errorData.Message || "Failed to add container";
+                throw new Error(errorMessage);
+              }
+
       setToast({ message: "Added successfully", type: "success" });
       setNewContainerName("");
       await fetchContainers();
@@ -69,7 +75,11 @@ function App() {
     setError('');
     try {
       const res = await fetch(`/api/containers/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Delete failed');
+      if (!res.ok) {
+        const errorData = await res.json();
+        const errorMessage = errorData.message || errorData.Message || 'Delete failed';
+        throw new Error(errorMessage);
+      }
       setToast({ message: 'Deleted successfully', type: 'success' });
       await fetchContainers();
     } catch (e) {
@@ -91,7 +101,11 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: Number(addWaterAmount) })
       });
-      if (!res.ok) throw new Error('Add water failed');
+      if (!res.ok) {
+        const errorData = await res.json();
+        const errorMessage = errorData.message || errorData.Message || 'Add water failed';
+        throw new Error(errorMessage);
+      }
       setToast({ message: 'Water added', type: 'success' });
       setAddWaterTargetId(null);
       await fetchContainers();
@@ -115,7 +129,11 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sourceContainerId: connectSourceId, targetContainerId: targetId })
       });
-      if (!res.ok) throw new Error('Connect failed');
+      if (!res.ok) {
+        const errorData = await res.json();
+        const errorMessage = errorData.message || errorData.Message || 'Connect failed';
+        throw new Error(errorMessage);
+      }
       setToast({ message: 'Connected!', type: 'success' });
       await fetchContainers();
     } catch (e) {
