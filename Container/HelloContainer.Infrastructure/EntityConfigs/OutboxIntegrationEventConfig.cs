@@ -16,6 +16,7 @@ namespace HelloContainer.Infrastructure.EntityConfigs
             builder.Property(c => c.Id).ToJsonProperty("id");
             builder.Property(o => o.EventName).ToJsonProperty("eventName");
             builder.Property(o => o.EventContent).ToJsonProperty("eventContent");
+            builder.Property(o => o.Processed).ToJsonProperty("processed");
 
             builder.Ignore(t => t.DomainEvents);
         }

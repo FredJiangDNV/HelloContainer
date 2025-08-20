@@ -1,8 +1,8 @@
 ﻿using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using HelloContainer.Domain.Abstractions;
 using System.Text.Json;
 
 namespace HelloContainer.Infrastructure
@@ -33,8 +33,9 @@ namespace HelloContainer.Infrastructure
         private async Task PublishIntegrationEvents(CancellationToken stoppingToken)
         {
             var scope = _serviceScopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<HelloContainerDbContext>();
-            var outboxIntegrationEvents = await dbContext.OutboxIntegrationEvents.ToListAsync();
+            var outboxRepository = scope.ServiceProvider.GetRequiredService<IOutboxRepository>();
+            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var outboxIntegrationEvents = await outboxRepository.GetUnprocessedEventsAsync(stoppingToken);
             var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
             foreach (var e in outboxIntegrationEvents)
@@ -43,15 +44,15 @@ namespace HelloContainer.Infrastructure
                 var eventType = Type.GetType($"HelloContainer.SharedKernel.IntegrationEvents.{e.EventName}, HelloContainer.SharedKernel");
                 var integrationEvent = JsonSerializer.Deserialize(e.EventContent, eventType);
                 if (integrationEvent != null)
-                {
                     await publishEndpoint.Publish(integrationEvent, stoppingToken);
-                }
             }
 
             if (outboxIntegrationEvents.Any())
             {
-                dbContext.RemoveRange(outboxIntegrationEvents);
-                await dbContext.SaveChangesAsync();
+                foreach (var e in outboxIntegrationEvents)
+                    await outboxRepository.MarkAsProcessedAsync(e.Id, stoppingToken);
+
+                await unitOfWork.SaveChangesAsync(stoppingToken);
             }
         }
     }

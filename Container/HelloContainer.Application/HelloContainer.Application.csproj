@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HelloContainer.Domain\HelloContainer.Domain.csproj" />
     <ProjectReference Include="..\HelloContainer.DTOs\HelloContainer.DTOs.csproj" />
-    <ProjectReference Include="..\HelloContainer.Infrastructure\HelloContainer.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

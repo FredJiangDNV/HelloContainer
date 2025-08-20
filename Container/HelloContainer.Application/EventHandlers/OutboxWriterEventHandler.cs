@@ -1,6 +1,6 @@
 ﻿using HelloContainer.Domain.ContainerAggregate.Events;
 using HelloContainer.Domain.OutboxAggregate;
-using HelloContainer.Infrastructure;
+using HelloContainer.Domain.Abstractions;
 using HelloContainer.SharedKernel;
 using HelloContainer.SharedKernel.IntegrationEvents;
 using MediatR;
@@ -12,34 +12,38 @@ namespace HelloContainer.Application.EventHandlers
         : INotificationHandler<ContainerCreatedDomainEvent>,
           INotificationHandler<ContainerDeletedDomainEvent>
     {
-        private readonly HelloContainerDbContext _dbContext;
+        private readonly IOutboxRepository _outboxRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public OutboxWriterEventHandler(HelloContainerDbContext dbContext)
+        public OutboxWriterEventHandler(
+            IOutboxRepository outboxRepository,
+            IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _outboxRepository = outboxRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken cancellationToken)
         {
-            var ie = new ContainerCreatedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
-            var content = JsonSerializer.Serialize(ie);
-            await AddOutboxIntegrationEventAsync(ie, content);
+            var integrationEvent = new ContainerCreatedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
+            await AddOutboxIntegrationEventAsync(integrationEvent, cancellationToken);
         }
 
         public async Task Handle(ContainerDeletedDomainEvent @event, CancellationToken cancellationToken)
         {
-            var ie = new ContainerDeletedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
-            var content = JsonSerializer.Serialize(ie);
-            await AddOutboxIntegrationEventAsync(ie, content);
+            var integrationEvent = new ContainerDeletedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
+            await AddOutboxIntegrationEventAsync(integrationEvent, cancellationToken);
         }
 
-        private async Task AddOutboxIntegrationEventAsync(IIntegrationEvent integrationEvent, string content)
+        private async Task AddOutboxIntegrationEventAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
         {
-            await _dbContext.OutboxIntegrationEvents.AddAsync(OutboxIntegrationEvent.Create(
+            var content = JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType());
+            var outboxEvent = OutboxIntegrationEvent.Create(
                 integrationEvent.GetType().Name,
-                content));
+                content);
 
-            await _dbContext.SaveChangesAsync();
+            _outboxRepository.Add(outboxEvent);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }

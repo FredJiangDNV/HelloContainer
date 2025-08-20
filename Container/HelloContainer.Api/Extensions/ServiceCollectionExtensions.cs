@@ -74,6 +74,7 @@ namespace HelloContainer.Api.Extensions
             // Add Services
             services.AddScoped<IContainerRepository, ContainerRepository>();
             services.AddScoped<IAlertRepository, AlertRepository>();
+            services.AddScoped<IOutboxRepository, OutboxRepository>();
             services.AddScoped<ContainerService>();
             services.AddScoped<ContainerManager>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
