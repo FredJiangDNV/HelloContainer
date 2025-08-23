@@ -1,14 +1,11 @@
-@description('Creates Cosmos DB Account')
-
 param environmentName string
 param location string
 param projectName string
 
-// Cosmos DB Account
+// Cosmos DB Account with Free Tier
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: 'cosmos-${projectName}-${environmentName}'
   location: location
-  kind: 'GlobalDocumentDB'
   properties: {
     consistencyPolicy: {
       defaultConsistencyLevel: 'Session'
@@ -17,17 +14,14 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
       {
         locationName: location
         failoverPriority: 0
-        isZoneRedundant: false
       }
     ]
     databaseAccountOfferType: 'Standard'
-    enableAutomaticFailover: false
-    enableMultipleWriteLocations: false
-    capabilities: []
+    enableFreeTier: true
   }
 }
 
-// Cosmos DB Database
+// Database with shared throughput
 resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04-15' = {
   name: 'HelloContainerDB'
   parent: cosmosDbAccount
@@ -36,18 +30,60 @@ resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@20
       id: 'HelloContainerDB'
     }
     options: {
-      throughput: 400
+      throughput: 1000
     }
   }
 }
 
-// Container for main data
-resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
-  name: 'Containers'
+// Containers
+resource alertsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'alerts'
   parent: cosmosDbDatabase
   properties: {
     resource: {
-      id: 'Containers'
+      id: 'alerts'
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+    }
+  }
+}
+
+resource containersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'containers'
+  parent: cosmosDbDatabase
+  properties: {
+    resource: {
+      id: 'containers'
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+    }
+  }
+}
+
+resource ledgersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'ledgers'
+  parent: cosmosDbDatabase
+  properties: {
+    resource: {
+      id: 'ledgers'
+      partitionKey: {
+        paths: ['/id']
+        kind: 'Hash'
+      }
+    }
+  }
+}
+
+resource outboxsContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'outboxs'
+  parent: cosmosDbDatabase
+  properties: {
+    resource: {
+      id: 'outboxs'
       partitionKey: {
         paths: ['/id']
         kind: 'Hash'

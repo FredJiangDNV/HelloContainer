@@ -95,22 +95,14 @@ HelloContainer/
 * 《领域驱动设计-软件核心复杂性能应对之道》
 *  eShop(https://github.com/dotnet/eShop)
 
-## Q&A
-#### Application Services vs Domain Services
-Domain logic is everything that is related to **business decisions**. Domain services, therefore, participate in the decision - making process the same way entities and value objects do. And application services **orchestrate those decisions** the same way they orchestrate decisions made by entities and value objects.
+## Release 1 - 初始发布 (2025-08-23)
+- **核心领域功能**: 容器容量管理、跨容器连接与均衡、溢出与阈值预警处理。
+- **后端 API (.NET 8)**: 分层架构（Domain/Application/Infrastructure）、领域/集成事件、仓储与工作单元、全局异常处理中间件、AutoMapper 映射、FluentValidation 校验。
+- **消息与异步**: 集成 RabbitMQ（生产/消费），提供 Outbox 背景服务加工集成事件；新增 Azure Functions 作为异步处理与账本（Ledger）消费者。
+- **前端**: React + Vite 初版 UI，支持容器可视化与基本操作入口。
+- **测试**: 单元测试与集成测试覆盖容量计算、连通均衡、异常分支等关键用例。
 
-#### Transactional Consistency vs Eventual Consistency
-##### Transactional Consistency
-* Process as a whole, nothing success or all success
-* Decrease performance
-##### Eventual Consistency
-* Inconsistency state exist
-* Quick response, no wait
-* Error handling, retry
-* Use domain event
-
-#### Rich vs. Anemic Domain Models
- * Anemic，属性public，没有方法，外部控制业务逻辑
- * Rich， 属性private，业务内部控制，外部调用暴露方法
-
-#### Always Valid vs. Not Always Valid
+## Release 2
+- **基础设施 (Azure)**: 基于 Bicep 的模块化基础设施（`container-apps-environment`、`container-app-api`、`container-app-function`、`container-app-web`、`container-registry`、`cosmos-db`、`service-bus`、`storage`）。
+- **安全与策略**: 引入 OPA。
+- **本地开发**: Docker Compose 一键启动（RabbitMQ、CosmosDB Emulator、API、Function、Web）。
