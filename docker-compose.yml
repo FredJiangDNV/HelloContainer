@@ -40,51 +40,44 @@ services:
       retries: 3
 
   # HelloContainer Web API
-  # api:
-  #   build:
-  #     context: .
-  #     dockerfile: Container/HelloContainer.Api/Dockerfile
-  #   container_name: hello-container-api
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=http://+:80
-  #     - ConnectionStrings__CosmosDB=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;DisableServerCertificateValidation=true
-  #     - DatabaseSettings__DatabaseName=HelloContainerDB
-  #     - MessageBroker__Host=hello-rabbitmq
-  #     - MessageBroker__Username=guest
-  #     - MessageBroker__Password=guest
-  #   ports:
-  #     - "5000:80"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     cosmosdb:
-  #       condition: service_started
-  #   networks:
-  #     - hello-container-network
-  #   restart: unless-stopped
+  api:
+    build:
+      context: .
+      dockerfile: Container/HelloContainer.Api/Dockerfile
+    container_name: hello-container-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - MessageBroker__Host=hello-rabbitmq
+      - MessageBroker__Username=guest
+      - MessageBroker__Password=guest
+    ports:
+      - "5000:80"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - hello-container-network
+    restart: unless-stopped
 
   # HelloContainer Azure Function
-  # function:
-  #   build:
-  #     context: .
-  #     dockerfile: Ledger/HelloContainer.Function/Dockerfile
-  #   container_name: hello-container-function
-  #   environment:
-  #     - AzureWebJobsStorage=UseDevelopmentStorage=true
-  #     - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
-  #     - RabbitMQ=amqp://guest:guest@hello-rabbitmq:5672
-  #     - CosmosDB=AccountEndpoint=https://cosmosdb:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==;DisableServerCertificateValidation=true
-  #   ports:
-  #     - "7071:80"
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
-  #     cosmosdb:
-  #       condition: service_started
-  #   networks:
-  #     - hello-container-network
-  #   restart: unless-stopped
+  function:
+    build:
+      context: .
+      dockerfile: Ledger/HelloContainer.Function/Dockerfile
+    container_name: hello-container-function
+    environment:
+      - AzureWebJobsStorage=UseDevelopmentStorage=true
+      - FUNCTIONS_WORKER_RUNTIME=dotnet-isolated
+      - RabbitMQ=amqp://guest:guest@hello-rabbitmq:5672
+    ports:
+      - "7071:80"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - hello-container-network
+    restart: unless-stopped
 
   # React Frontend
   # web:
