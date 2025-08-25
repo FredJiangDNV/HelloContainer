@@ -36,7 +36,7 @@ namespace HelloContainer.Infrastructure
             var outboxRepository = scope.ServiceProvider.GetRequiredService<IOutboxRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var outboxIntegrationEvents = await outboxRepository.GetUnprocessedEventsAsync(stoppingToken);
-            var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
+            var sender = scope.ServiceProvider.GetRequiredService<ISendEndpointProvider>();
 
             foreach (var e in outboxIntegrationEvents)
             {
@@ -44,7 +44,10 @@ namespace HelloContainer.Infrastructure
                 var eventType = Type.GetType($"HelloContainer.SharedKernel.IntegrationEvents.{e.EventName}, HelloContainer.SharedKernel");
                 var integrationEvent = JsonSerializer.Deserialize(e.EventContent, eventType);
                 if (integrationEvent != null)
-                    await publishEndpoint.Publish(integrationEvent, stoppingToken);
+                {
+                    var endpoint = await sender.GetSendEndpoint(new Uri("queue:container-queue"));
+                    await endpoint.Send(integrationEvent, stoppingToken);
+                }
             }
 
             if (outboxIntegrationEvents.Any())

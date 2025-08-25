@@ -18,26 +18,26 @@ services:
   #     - hello-container-network
 
   # RabbitMQ Message Broker
-  rabbitmq:
-    image: rabbitmq:4-management
-    container_name: hello-container-rabbitmq
-    hostname: hello-rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - ./.containers/queue/rabbitmq/data:/var/lib/rabbitmq
-      - ./.containers/queue/rabbitmq/log:/var/log/rabbitmq
-    networks:
-      - hello-container-network
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 30s
-      retries: 3
+  # rabbitmq:
+  #   image: rabbitmq:4-management
+  #   container_name: hello-container-rabbitmq
+  #   hostname: hello-rabbitmq
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=guest
+  #     - RABBITMQ_DEFAULT_PASS=guest
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   volumes:
+  #     - ./.containers/queue/rabbitmq/data:/var/lib/rabbitmq
+  #     - ./.containers/queue/rabbitmq/log:/var/log/rabbitmq
+  #   networks:
+  #     - hello-container-network
+  #   healthcheck:
+  #     test: rabbitmq-diagnostics -q ping
+  #     interval: 30s
+  #     timeout: 30s
+  #     retries: 3
 
   # HelloContainer Web API
   api:

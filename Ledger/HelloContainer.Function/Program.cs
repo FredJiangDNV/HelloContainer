@@ -23,19 +23,19 @@ builder.Services.AddDbContext<LedgerDbContext>(options =>
     ));
 
 // Configure MassTransit with RabbitMQ
-builder.Services.AddMassTransit(c =>
-{
-    c.SetKebabCaseEndpointNameFormatter();
+//builder.Services.AddMassTransit(c =>
+//{
+//    c.SetKebabCaseEndpointNameFormatter();
 
-    c.AddConsumer<ContainerCreatedConsumer>();
-    c.AddConsumer<ContainerDeletedConsumer>();
+//    c.AddConsumer<ContainerCreatedConsumer>();
+//    c.AddConsumer<ContainerDeletedConsumer>();
 
-    c.UsingRabbitMq((context, cfg) =>
-    {
-        var rabbitMqConnection = Environment.GetEnvironmentVariable("RabbitMQ");
-        cfg.Host(rabbitMqConnection);
-        cfg.ConfigureEndpoints(context);
-    });
-});
+//    c.UsingRabbitMq((context, cfg) =>
+//    {
+//        var rabbitMqConnection = Environment.GetEnvironmentVariable("RabbitMQ");
+//        cfg.Host(rabbitMqConnection);
+//        cfg.ConfigureEndpoints(context);
+//    });
+//});
 
 builder.Build().Run();

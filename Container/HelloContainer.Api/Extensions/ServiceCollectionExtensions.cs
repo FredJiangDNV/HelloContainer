@@ -42,16 +42,23 @@ namespace HelloContainer.Api.Extensions
             services.AddMassTransit(c =>
             {
                 c.SetKebabCaseEndpointNameFormatter();
-                c.UsingRabbitMq((context, cfg) =>
+                //c.UsingRabbitMq((context, cfg) =>
+                //{
+                //    var settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
+
+                //    cfg.Host(settings.Host, h =>
+                //    {
+                //        h.Username(settings.Username);
+                //        h.Password(settings.Password);
+                //    });
+
+                //    cfg.ConfigureEndpoints(context);
+                //});
+
+                c.UsingAzureServiceBus((context, cfg) =>
                 {
-                    var settings = context.GetRequiredService<IOptions<MessageBrokerSettings>>().Value;
-                    
-                    cfg.Host(settings.Host, h =>
-                    {
-                        h.Username(settings.Username);
-                        h.Password(settings.Password);
-                    });
-                    
+                    var connectionString = configuration.GetConnectionString("ServiceBus");
+                    cfg.Host(connectionString);
                     cfg.ConfigureEndpoints(context);
                 });
             });
