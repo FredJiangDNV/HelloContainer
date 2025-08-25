@@ -1,21 +1,19 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using HelloContainer.SharedKernel.IntegrationEvents;
 using HelloContainer.Function.Data;
 using HelloContainer.Function.Data.Entities;
+using HelloContainer.SharedKernel;
 
 namespace HelloContainer.Function
 {
     public class ContainerQueueFunctions
     {
-        private readonly ILogger<ContainerQueueFunctions> _logger;
         private readonly LedgerDbContext _dbContext;
 
-        public ContainerQueueFunctions(ILogger<ContainerQueueFunctions> logger, LedgerDbContext dbContext)
+        public ContainerQueueFunctions(LedgerDbContext dbContext)
         {
-            _logger = logger;
             _dbContext = dbContext;
         }
 
@@ -33,49 +31,24 @@ namespace HelloContainer.Function
             switch (eventType)
             {
                 case "ContainerCreated":
-                    await HandleContainerCreatedEvent(messageBody, correlationId, cancellationToken);
+                    await HandleEvent<ContainerCreatedIntegrationEvent>(messageBody, correlationId, cancellationToken);
                     break;
                 case "ContainerDeleted":
-                    await HandleContainerDeletedEvent(messageBody, correlationId, cancellationToken);
-                    break;
-                default:
-                    _logger.LogWarning("Unknown event type: {EventType}. CorrelationId: {CorrelationId}", eventType, correlationId);
+                    await HandleEvent<ContainerDeletedIntegrationEvent>(messageBody, correlationId, cancellationToken);
                     break;
             }
         }
 
-        private async Task HandleContainerCreatedEvent(string messageBody, string correlationId, CancellationToken cancellationToken)
+        private async Task HandleEvent<T>(string messageBody, string correlationId, CancellationToken cancellationToken)
+            where T : IIntegrationEvent
         {
-            ContainerCreatedIntegrationEvent? integrationEvent = null;
+            T? integrationEvent = default(T);
                 
             using var document = JsonDocument.Parse(messageBody);
             if (document.RootElement.TryGetProperty("message", out var messageElement))
             {
                 var messageJson = messageElement.GetRawText();
-                integrationEvent = JsonSerializer.Deserialize<ContainerCreatedIntegrationEvent>(messageJson, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-            }
-
-            var eventLedger = EventLedger.Create(
-                eventType: integrationEvent!.EventType,
-                eventData: integrationEvent
-            );
-
-            _dbContext.EventLedgers.Add(eventLedger);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        private async Task HandleContainerDeletedEvent(string messageBody, string correlationId, CancellationToken cancellationToken)
-        {
-            ContainerDeletedIntegrationEvent? integrationEvent = null;
-                
-            using var document = JsonDocument.Parse(messageBody);
-            if (document.RootElement.TryGetProperty("message", out var messageElement))
-            {
-                var messageJson = messageElement.GetRawText();
-                integrationEvent = JsonSerializer.Deserialize<ContainerDeletedIntegrationEvent>(messageJson, new JsonSerializerOptions
+                integrationEvent = JsonSerializer.Deserialize<T>(messageJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
