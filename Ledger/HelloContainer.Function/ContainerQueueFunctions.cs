@@ -19,10 +19,9 @@ namespace HelloContainer.Function
 
         [Function("ContainerQueueProcessor")]
         public async Task ProcessMessage(
-            [ServiceBusTrigger("container-queue", Connection = "ServiceBus")] ServiceBusReceivedMessage message,
+            [ServiceBusTrigger("container-events", Connection = "ServiceBus")] ServiceBusReceivedMessage message,
             FunctionContext context)
         {
-            var correlationId = message.CorrelationId ?? Guid.NewGuid().ToString();
             var cancellationToken = context.CancellationToken;
 
             var messageBody = message.Body.ToString();
@@ -31,35 +30,35 @@ namespace HelloContainer.Function
             switch (eventType)
             {
                 case "ContainerCreated":
-                    await HandleEvent<ContainerCreatedIntegrationEvent>(messageBody, correlationId, cancellationToken);
+                    await HandleEvent<ContainerCreatedIntegrationEvent>(messageBody, cancellationToken);
                     break;
                 case "ContainerDeleted":
-                    await HandleEvent<ContainerDeletedIntegrationEvent>(messageBody, correlationId, cancellationToken);
+                    await HandleEvent<ContainerDeletedIntegrationEvent>(messageBody, cancellationToken);
                     break;
             }
         }
 
-        private async Task HandleEvent<T>(string messageBody, string correlationId, CancellationToken cancellationToken)
+        private async Task HandleEvent<T>(string messageBody, CancellationToken cancellationToken)
             where T : IIntegrationEvent
         {
-            T? integrationEvent = default(T);
+            T? @event = default(T);
                 
             using var document = JsonDocument.Parse(messageBody);
             if (document.RootElement.TryGetProperty("message", out var messageElement))
             {
                 var messageJson = messageElement.GetRawText();
-                integrationEvent = JsonSerializer.Deserialize<T>(messageJson, new JsonSerializerOptions
+                @event = JsonSerializer.Deserialize<T>(messageJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
             }
 
-            var eventLedger = EventLedger.Create(
-                eventType: integrationEvent!.EventType,
-                eventData: integrationEvent
+            var ledger = EventLedger.Create(
+                eventType: @event!.EventType,
+                eventData: @event
             );
 
-            _dbContext.EventLedgers.Add(eventLedger);
+            _dbContext.EventLedgers.Add(ledger);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 

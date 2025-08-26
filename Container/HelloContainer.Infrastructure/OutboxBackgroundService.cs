@@ -45,7 +45,7 @@ namespace HelloContainer.Infrastructure
                 var integrationEvent = JsonSerializer.Deserialize(e.EventContent, eventType);
                 if (integrationEvent != null)
                 {
-                    var endpoint = await sender.GetSendEndpoint(new Uri("queue:container-queue"));
+                    var endpoint = await sender.GetSendEndpoint(new Uri("queue:container-events"));
                     await endpoint.Send(integrationEvent, stoppingToken);
                 }
             }

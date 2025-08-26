@@ -25,5 +25,16 @@ module cosmosDb 'modules/cosmos-db.bicep' = {
   }
 }
 
+// Deploy Service Bus
+module serviceBus 'modules/service-bus.bicep' = {
+  name: 'serviceBus'
+  scope: rg
+  params: {
+    environmentName: environmentName
+    location: location
+    projectName: projectName
+  }
+}
+
 // Outputs
 output resourceGroupName string = rg.name

@@ -4,7 +4,7 @@
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
     "RabbitMQ": "amqp://guest:guest@localhost:5672",
-    "ServiceBus": "Endpoint=sb://sb-hellocontainer-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=tEZpcVw/GrxSWhpmsv0XNvbGqVsuSwCil+ASbB7xo9s=",
-    "CosmosDB": "AccountEndpoint=https://cosmos-hellocontainer-dev.documents.azure.com:443/;AccountKey=cIGaNKC6azEkKqEnEw6qdrrpBt9XEtIJdUziz9hAotCLImegLgH4TDG4F2SX6FTmzG7UpfJlHg5VACDbqNizoQ==;"
+    "ServiceBus": "Endpoint=sb://sb-hellocontainer-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=1oaDcKPzs9GUh/gSdfg5LWsgVdnx3+FOW+ASbG/6EwQ=",
+    "CosmosDB": "AccountEndpoint=https://cosmos-hellocontainer-dev.documents.azure.com:443/;AccountKey=6ilN2SN43dMtt3OXucNTiBtFeBOhlNenhASAS9vxWyr10LzaqyCMiZMzahncf0atxfgC7GIsQtG3ACDbOB5WRw==;"
   }
 }
