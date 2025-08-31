@@ -12,6 +12,7 @@ using HelloContainer.Application;
 using MassTransit;
 using HelloContainer.Api.Settings;
 using Microsoft.Extensions.Options;
+using HelloContainer.Api.Services;
 
 namespace HelloContainer.Api.Extensions
 {
@@ -63,7 +64,7 @@ namespace HelloContainer.Api.Extensions
                 });
             });
 
-            services.AddHostedService<OutboxBackgroundService>();
+            //services.AddHostedService<OutboxBackgroundService>();
 
             services.AddAutoMapper(typeof(ContainerMappingProfile).Assembly);
 
@@ -87,6 +88,7 @@ namespace HelloContainer.Api.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ContainerFactory>();
             services.AddScoped<AlertService>();
+            services.AddSingleton<IUserService, UserService>();
 
             return services;
         }

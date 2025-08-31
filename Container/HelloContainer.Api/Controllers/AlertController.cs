@@ -1,10 +1,12 @@
 using HelloContainer.Application;
 using HelloContainer.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HelloContainer.Api.Controllers
 {
     [Route("api/[controller]s")]
+    [Authorize]
     public class AlertController : ApiControllerBase
     {
         private readonly AlertService _alertService;
