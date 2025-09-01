@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HelloContainer.Api.Controllers
 {
     [Route("api/[controller]s")]
-    [Authorize]
+    //[Authorize]
     public class ContainerController : ApiControllerBase
     {
         private readonly ContainerService _containerService;
