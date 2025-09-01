@@ -1,4 +1,4 @@
-// using Microsoft.AspNetCore.Authorization; // Temporarily commented out
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HelloContainer.WebApp.Services;
 using System.Diagnostics;
@@ -6,7 +6,7 @@ using HelloContainer.WebApp.Models;
 
 namespace HelloContainer.WebApp.Controllers;
 
-// [Authorize] // Temporarily commented out for development
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ContainerApiClient _containerApiClient;
@@ -20,42 +20,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(string? searchKeyword)
     {
-        try
-        {
-            var containers = await _containerApiClient.GetContainersAsync(searchKeyword);
-            ViewBag.SearchKeyword = searchKeyword;
-            return View(containers ?? new List<ContainerDto>());
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error loading containers");
-            ViewBag.Error = "Failed to load containers. Please try again.";
-            return View(new List<ContainerDto>());
-        }
-    }
-
-    public async Task<IActionResult> Details(Guid id)
-    {
-        try
-        {
-            var container = await _containerApiClient.GetContainerByIdAsync(id);
-            if (container == null)
-            {
-                return NotFound();
-            }
-            return View(container);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error loading container {ContainerId}", id);
-            return NotFound();
-        }
-    }
-
-    [HttpGet]
-    public IActionResult Create()
-    {
-        return View();
+        var containers = await _containerApiClient.GetContainersAsync(searchKeyword);
+        ViewBag.SearchKeyword = searchKeyword;
+        return View(containers ?? new List<ContainerDto>());
     }
 
     [HttpPost]
@@ -64,54 +31,47 @@ public class HomeController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return View(model);
-        }
-
-        try
-        {
-            var container = await _containerApiClient.CreateContainerAsync(model);
+            TempData["Error"] = "Invalid container data. Please check your input.";
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating container");
-            ModelState.AddModelError("", "Failed to create container. Please try again.");
-            return View(model);
-        }
+
+        var container = await _containerApiClient.CreateContainerAsync(model);
+        TempData["Success"] = "Container created successfully!";
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddWater(Guid id, decimal amount)
     {
-        try
-        {
-            await _containerApiClient.AddWaterAsync(id, amount);
-            return RedirectToAction(nameof(Details), new { id });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error adding water to container {ContainerId}", id);
-            TempData["Error"] = "Failed to add water. Please try again.";
-            return RedirectToAction(nameof(Details), new { id });
-        }
+        await _containerApiClient.AddWaterAsync(id, amount);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(Guid id)
     {
-        try
-        {
-            await _containerApiClient.DeleteContainerAsync(id);
-            return RedirectToAction(nameof(Index));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error deleting container {ContainerId}", id);
-            TempData["Error"] = "Failed to delete container. Please try again.";
-            return RedirectToAction(nameof(Index));
-        }
+        await _containerApiClient.DeleteContainerAsync(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Connect(Guid sourceId, Guid targetId)
+    {
+        await _containerApiClient.ConnectContainersAsync(sourceId, targetId);
+        TempData["Success"] = "Containers connected successfully!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Disconnect(Guid sourceId, Guid targetId)
+    {
+        await _containerApiClient.DisconnectContainersAsync(sourceId, targetId);
+        TempData["Success"] = "Containers disconnected successfully!";
+        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Privacy()

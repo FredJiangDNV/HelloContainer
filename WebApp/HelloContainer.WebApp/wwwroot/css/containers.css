@@ -1,0 +1,215 @@
+/* Container Visualization Styles */
+.container-graph {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    min-height: 400px;
+    position: relative;
+    overflow-x: auto;
+}
+
+.container-visual {
+    display: inline-block;
+    margin: 10px 20px;
+    text-align: center;
+    position: relative;
+    vertical-align: top;
+}
+
+.container-tank {
+    width: 80px;
+    height: 120px;
+    border: 3px solid #333;
+    border-radius: 15px;
+    position: relative;
+    background: #fff;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.water-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, #2196f3, #90caf9);
+    transition: height 0.3s ease;
+    border-radius: 0 0 12px 12px;
+}
+
+.water-level.full {
+    border-radius: 12px;
+}
+
+.container-info {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.container-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.container-stats {
+    color: #666;
+    font-size: 12px;
+}
+
+.container-amount {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    z-index: 10;
+}
+
+.container-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.action-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.btn-add-water {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.btn-add-water:hover {
+    background: #bbdefb;
+}
+
+.btn-delete {
+    background: #ffebee;
+    color: #f44336;
+}
+
+.btn-delete:hover {
+    background: #ffcdd2;
+}
+
+.btn-connect {
+    background: #e8f5e8;
+    color: #4caf50;
+}
+
+.btn-connect:hover {
+    background: #c8e6c9;
+}
+
+.connection-line {
+    position: absolute;
+    height: 3px;
+    background: #333;
+    z-index: 1;
+}
+
+.disconnect-btn {
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border: 2px solid #f44336;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #f44336;
+    z-index: 2;
+    position: relative;
+}
+
+.disconnect-btn:hover {
+    background: #ffebee;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 6px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.toast.success {
+    background: #4caf50;
+}
+
+.toast.error {
+    background: #f44336;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1050;
+}
+
+.connect-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 300px;
+    z-index: 1051;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.connect-modal h5 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.connect-option {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.connect-option:hover {
+    background: #f5f5f5;
+}
+
+.capacity-label {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 5px;
+}
