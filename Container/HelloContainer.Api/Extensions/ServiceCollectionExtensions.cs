@@ -64,7 +64,7 @@ namespace HelloContainer.Api.Extensions
                 });
             });
 
-            //services.AddHostedService<OutboxBackgroundService>();
+            services.AddHostedService<OutboxBackgroundService>();
 
             services.AddAutoMapper(typeof(ContainerMappingProfile).Assembly);
 

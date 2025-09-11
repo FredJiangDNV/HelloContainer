@@ -53,11 +53,7 @@ namespace HelloContainer.Function
                 });
             }
 
-            var ledger = EventLedger.Create(
-                eventType: @event!.EventType,
-                eventData: @event
-            );
-
+            var ledger = EventLedger.Create(@event!.EventType, @event);
             _dbContext.EventLedgers.Add(ledger);
             await _dbContext.SaveChangesAsync(cancellationToken);
         }

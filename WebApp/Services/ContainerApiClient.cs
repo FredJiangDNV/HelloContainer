@@ -12,22 +12,6 @@ public class ContainerApiClient
         _httpClient = httpClient;
     }
 
-    private async Task SetAuthorizationHeaderAsync()
-    {
-        try
-        {
-            //var scope = _configuration["ContainerApi:Scope"];
-            //var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(new[] { scope! });
-
-            //_httpClient.DefaultRequestHeaders.Authorization =
-            //    new AuthenticationHeaderValue("Bearer", accessToken);
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
-    }
-
     public async Task<List<ContainerDto>?> GetContainersAsync(string? searchKeyword = null)
     {
         var url = "api/containers";
