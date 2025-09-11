@@ -23,27 +23,23 @@ namespace HelloContainer.Application.EventHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken cancellationToken)
+        public async Task Handle(ContainerCreatedDomainEvent @event, CancellationToken ct)
         {
-            var integrationEvent = new ContainerCreatedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
-            await AddOutboxIntegrationEventAsync(integrationEvent, cancellationToken);
+            var ie = new ContainerCreatedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
+            await AddOutboxIntegrationEventAsync(ie, ct);
         }
 
-        public async Task Handle(ContainerDeletedDomainEvent @event, CancellationToken cancellationToken)
+        public async Task Handle(ContainerDeletedDomainEvent @event, CancellationToken ct)
         {
-            var integrationEvent = new ContainerDeletedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
-            await AddOutboxIntegrationEventAsync(integrationEvent, cancellationToken);
+            var ie = new ContainerDeletedIntegrationEvent(@event.Id, @event.ContainerId, @event.Name);
+            await AddOutboxIntegrationEventAsync(ie, ct);
         }
 
-        private async Task AddOutboxIntegrationEventAsync(IIntegrationEvent integrationEvent, CancellationToken cancellationToken)
+        private async Task AddOutboxIntegrationEventAsync(IIntegrationEvent integrationEvent, CancellationToken ct)
         {
             var content = JsonSerializer.Serialize(integrationEvent, integrationEvent.GetType());
-            var outboxEvent = OutboxIntegrationEvent.Create(
-                integrationEvent.GetType().Name,
-                content);
-
+            var outboxEvent = OutboxIntegrationEvent.Create(integrationEvent.GetType().Name, content);
             _outboxRepository.Add(outboxEvent);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 }
