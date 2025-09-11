@@ -5,10 +5,16 @@ using HelloContainer.WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient<ContainerApiClient>(client =>
+{
+    var apiBaseUrl = builder.Configuration["ContainerApi:BaseUrl"];
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
+
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
-    .EnableTokenAcquisitionToCallDownstreamApi(new string[] { builder.Configuration["ContainerApi:Scope"]! })
-    .AddInMemoryTokenCaches();
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+    //.EnableTokenAcquisitionToCallDownstreamApi(new string[] { builder.Configuration["ContainerApi:Scope"]! })
+    //.AddInMemoryTokenCaches();
 
 builder.Services.AddControllersWithViews()
     .AddMicrosoftIdentityUI();
@@ -18,12 +24,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = options.DefaultPolicy;
-});
-
-builder.Services.AddHttpClient<ContainerApiClient>(client =>
-{
-    var apiBaseUrl = builder.Configuration["ContainerApi:BaseUrl"];
-    client.BaseAddress = new Uri(apiBaseUrl);
 });
 
 var app = builder.Build();

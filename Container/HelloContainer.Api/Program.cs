@@ -88,7 +88,7 @@ app.UseDomainExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.UseMiddleware<OpaAuthorizationMiddleware>();
+app.UseMiddleware<OpaAuthorizationMiddleware>();
 
 app.MapControllers();
 

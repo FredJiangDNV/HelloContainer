@@ -1,4 +1,3 @@
-using Microsoft.Identity.Web;
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,20 +6,10 @@ namespace HelloContainer.WebApp.Services;
 public class ContainerApiClient
 {
     private readonly HttpClient _httpClient;
-    private readonly ITokenAcquisition _tokenAcquisition;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<ContainerApiClient> _logger;
 
-    public ContainerApiClient(
-        HttpClient httpClient, 
-        ITokenAcquisition tokenAcquisition,
-        IConfiguration configuration,
-        ILogger<ContainerApiClient> logger)
+    public ContainerApiClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _tokenAcquisition = tokenAcquisition;
-        _configuration = configuration;
-        _logger = logger;
     }
 
     private async Task SetAuthorizationHeaderAsync()
@@ -41,8 +30,6 @@ public class ContainerApiClient
 
     public async Task<List<ContainerDto>?> GetContainersAsync(string? searchKeyword = null)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var url = "api/containers";
         if (!string.IsNullOrEmpty(searchKeyword))
         {
@@ -61,8 +48,6 @@ public class ContainerApiClient
 
     public async Task<ContainerDto?> GetContainerByIdAsync(Guid id)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var response = await _httpClient.GetAsync($"api/containers/{id}");
         response.EnsureSuccessStatusCode();
 
@@ -75,8 +60,6 @@ public class ContainerApiClient
 
     public async Task<ContainerDto?> CreateContainerAsync(CreateContainerDto createDto)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var json = JsonSerializer.Serialize(createDto);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             
@@ -92,8 +75,6 @@ public class ContainerApiClient
 
     public async Task<ContainerDto?> AddWaterAsync(Guid id, decimal amount)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var addWaterDto = new { Amount = amount };
         var json = JsonSerializer.Serialize(addWaterDto);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -110,16 +91,12 @@ public class ContainerApiClient
 
     public async Task DeleteContainerAsync(Guid id)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var response = await _httpClient.DeleteAsync($"api/containers/{id}");
         response.EnsureSuccessStatusCode();
     }
 
     public async Task ConnectContainersAsync(Guid sourceId, Guid targetId)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var connectDto = new { SourceContainerId = sourceId, TargetContainerId = targetId };
         var json = JsonSerializer.Serialize(connectDto);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
@@ -130,8 +107,6 @@ public class ContainerApiClient
 
     public async Task DisconnectContainersAsync(Guid sourceId, Guid targetId)
     {
-        await SetAuthorizationHeaderAsync();
-            
         var disconnectDto = new { SourceContainerId = sourceId, TargetContainerId = targetId };
         var json = JsonSerializer.Serialize(disconnectDto);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
