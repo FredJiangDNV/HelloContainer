@@ -8,12 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="8.5.0" />
-    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="8.5.0" />
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.2.0" />
+    <PackageReference Include="MassTransit" />
+    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" />
+    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.Identity.Web" />
   </ItemGroup>
 
 	<ItemGroup>

@@ -106,3 +106,6 @@ HelloContainer/
 - **基础设施 (Azure)**: 基于 Bicep 的模块化基础设施（`container-apps-environment`、`container-app-api`、`container-app-function`、`container-app-web`、`container-registry`、`cosmos-db`、`service-bus`、`storage`）。
 - **安全与策略**: 引入 OPA。
 - **本地开发**: Docker Compose 一键启动（RabbitMQ、CosmosDB Emulator、API、Function、Web）。
+- **Central Package Management**:
+  * https://devblogs.microsoft.com/dotnet/introducing-central-package-management/
+  * https://github.com/Webreaper/CentralisedPackageConverter
