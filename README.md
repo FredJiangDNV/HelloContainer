@@ -96,9 +96,7 @@ HelloContainer/
 *  eShop(https://github.com/dotnet/eShop)
 
 ## DDD Mind Map
-<img width="2978" height="2012" alt="image" src="https://github.com/user-attachments/assets/17bac484-9bf4-4561-9d51-6835d9286f79" />
-
-
+<img width="2994" height="2012" alt="image" src="https://github.com/user-attachments/assets/38a62db9-8524-4f37-b555-e95bb3e7fa26" />
 
 ## Release 1 - 初始发布 (2025-08-23)
 - **核心领域功能**: 容器容量管理、跨容器连接与均衡、溢出与阈值预警处理。
