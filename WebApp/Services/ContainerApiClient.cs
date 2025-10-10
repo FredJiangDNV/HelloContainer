@@ -21,25 +21,13 @@ public class ContainerApiClient
         }
 
         var response = await _httpClient.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<List<ContainerDto>>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return await DeserializeResponseAsync<List<ContainerDto>>(response);
     }
 
     public async Task<ContainerDto?> GetContainerByIdAsync(Guid id)
     {
         var response = await _httpClient.GetAsync($"api/containers/{id}");
-        response.EnsureSuccessStatusCode();
-
-        var json = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<ContainerDto>(json, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return await DeserializeResponseAsync<ContainerDto>(response);
     }
 
     public async Task<ContainerDto?> CreateContainerAsync(CreateContainerDto createDto)
@@ -48,13 +36,7 @@ public class ContainerApiClient
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             
         var response = await _httpClient.PostAsync("api/containers", content);
-        response.EnsureSuccessStatusCode();
-
-        var responseJson = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<ContainerDto>(responseJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return await DeserializeResponseAsync<ContainerDto>(response);
     }
 
     public async Task<ContainerDto?> AddWaterAsync(Guid id, decimal amount)
@@ -64,13 +46,7 @@ public class ContainerApiClient
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             
         var response = await _httpClient.PostAsync($"api/containers/{id}/water", content);
-        response.EnsureSuccessStatusCode();
-
-        var responseJson = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<ContainerDto>(responseJson, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        return await DeserializeResponseAsync<ContainerDto>(response);
     }
 
     public async Task DeleteContainerAsync(Guid id)
@@ -98,6 +74,17 @@ public class ContainerApiClient
         var response = await _httpClient.PostAsync("api/containers/disconnections", content);
         response.EnsureSuccessStatusCode();
     }
+
+    private static async Task<T?> DeserializeResponseAsync<T>(HttpResponseMessage response)
+    {
+        response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+    }
+
 }
 
 public class ContainerDto

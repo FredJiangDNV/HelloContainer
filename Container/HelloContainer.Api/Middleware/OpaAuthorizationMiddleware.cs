@@ -16,7 +16,7 @@ public class OpaAuthorizationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (!context.Request.Path.StartsWithSegments("/api") || !context.User.Identity?.IsAuthenticated == true)
+        if (!context.Request.Path.StartsWithSegments("/api"))
         {
             await _next(context);
             return;
@@ -26,6 +26,13 @@ public class OpaAuthorizationMiddleware
         if (endpoint?.Metadata?.GetMetadata<AllowAnonymousAttribute>() != null)
         {
             await _next(context);
+            return;
+        }
+
+        if (context.User.Identity?.IsAuthenticated != true)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Unauthorized: Authentication required");
             return;
         }
 
@@ -39,7 +46,7 @@ public class OpaAuthorizationMiddleware
         var allowed = await _opaService.AuthorizeAsync(context.User, resource, action);
         if (!allowed)
         {
-            context.Response.StatusCode = 403;
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
             await context.Response.WriteAsync("Access denied by policy");
             return;
         }
