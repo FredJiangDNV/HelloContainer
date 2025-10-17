@@ -95,6 +95,9 @@ HelloContainer/
 * 《领域驱动设计-软件核心复杂性能应对之道》
 *  eShop(https://github.com/dotnet/eShop)
 
+## DDD Mind Map
+<img width="2994" height="2012" alt="image" src="https://github.com/user-attachments/assets/38a62db9-8524-4f37-b555-e95bb3e7fa26" />
+
 ## Release 1 - 初始发布 (2025-08-23)
 - **核心领域功能**: 容器容量管理、跨容器连接与均衡、溢出与阈值预警处理。
 - **后端 API (.NET 8)**: 分层架构（Domain/Application/Infrastructure）、领域/集成事件、仓储与工作单元、全局异常处理中间件、AutoMapper 映射、FluentValidation 校验。
